@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 mProgress = ProgressDialog.show(MainActivity.this,
                         "Wait", "Downloading...");
-                DownThread  thread = new DownThread("http://192.168.0.56:8000/estates/");
+                DownThread  thread = new DownThread("http://192.168.0.56:8000/");
                 thread.start();
             }
         });
