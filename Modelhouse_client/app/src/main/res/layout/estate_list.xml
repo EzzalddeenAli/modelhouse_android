@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="300px"
+        android:layout_height="300px"
+        android:id="@+id/estate_photo"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="300px"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/estate_price"
+            android:layout_width="match_parent"
+            android:layout_height="60px" />
+        <TextView
+            android:id="@+id/estate_basic"
+            android:layout_width="match_parent"
+            android:layout_height="60px" />
+        <TextView
+            android:id="@+id/estate_info"
+            android:layout_width="match_parent"
+            android:layout_height="60px" />
+        <TextView
+            android:id="@+id/estate_facility"
+            android:layout_width="match_parent"
+            android:layout_height="60px" />
+        <TextView
+            android:id="@+id/estate_addr1"
+            android:layout_width="match_parent"
+            android:layout_height="60px" />
+
+    </LinearLayout>
+
+</LinearLayout>

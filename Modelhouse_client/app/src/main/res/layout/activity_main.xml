@@ -10,14 +10,17 @@
         android:layout_height="wrap_content"
         android:text="DownLoad HTML"
         />
-    <ScrollView
+
+    <TextView
+        android:id="@+id/result"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-        <TextView
-            android:id="@+id/result"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
-    </ScrollView>
+        android:layout_height="fill_parent" />
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    </ListView>
 </LinearLayout>
