@@ -10,8 +10,8 @@ class EstateController extends Controller
 {
     public function index()
     {
-        $latitude = addr_gue::where('name', '=', '영등포구')->value('latitude');
-        $longtitude = addr_gue::where('name', '=', '영등포구')->value('longtitude');
+        $latitude = addr_gue::where('name', '=', '강남구')->value('latitude');
+        $longtitude = addr_gue::where('name', '=', '강남구')->value('longtitude');
 
         $estates = DB::table('estates')->join('estate_categories', 'estates.id', '=', 'estate_categories.estate_id')
                 ->select('estates.id', 'estates.price_type', 'estates.photo', 'estates.monthly_price', 'estates.info', 'estates.annual_price', 'estates.price',

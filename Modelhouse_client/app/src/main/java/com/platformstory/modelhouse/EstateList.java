@@ -2,14 +2,22 @@ package com.platformstory.modelhouse;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -20,6 +28,7 @@ public class EstateList extends BaseAdapter{
     LayoutInflater Inflator;
     ArrayList<Estate> estates;
     int layout;
+    ImageView img;
 
     public EstateList(Context context, int alayout, ArrayList<Estate> estates){
         maincon = context;
@@ -45,7 +54,14 @@ public class EstateList extends BaseAdapter{
         if(convertView==null){
             convertView = Inflator.inflate(layout, parent, false);
         }
-        ImageView img = (ImageView)convertView.findViewById(R.id.estate_photo);
+        img = (ImageView)convertView.findViewById(R.id.estate_photo);
+
+
+//        (new DownImageThread("http://tourplatform.net:2500/storage/files/"+estates.get(position).photo)).start();
+        (new DownImageThread("http://postfiles14.naver.net/20091021_93/studiopj_1256099112708tbtqU_jpg/45625_studiopj.jpg")).start();
+
+        //Log.i("modelhouse", "http://tourplatform.net:2500/storage/files/"+estates.get(position).photo);
+
         //img.setImageResource(estates.get(position).photo);
 
         TextView estate_price = (TextView)convertView.findViewById(R.id.estate_price);
@@ -55,35 +71,60 @@ public class EstateList extends BaseAdapter{
         TextView estate_addr1 = (TextView)convertView.findViewById(R.id.estate_addr1);
 
         estate_price.setText(estates.get(position).price_type + ", " + estates.get(position).price);
-        estate_basic.setText(estates.get(position).type + "|" + estates.get(position).extent +"|"+ estates.get(position).category +"|"+ estates.get(position).usearea);
+        estate_basic.setText(estates.get(position).type + " | " + estates.get(position).extent +"㎡ | "+ estates.get(position).category +" | "+ estates.get(position).usearea);
         estate_info.setText(estates.get(position).info);
         estate_facility.setText(estates.get(position).facility);
         estate_addr1.setText(estates.get(position).addr1);
 
         return convertView;
     }
+
+    class DownImageThread extends Thread{
+        String mAddr;
+
+        DownImageThread(String addr) {
+            mAddr = addr;
+        }
+
+        public void run() {
+            Bitmap bit = Network.DownloadImage(mAddr);
+
+            Message message = mAfterDown.obtainMessage();
+            message.obj = bit;
+            mAfterDown.sendMessage(message);
+        }
+    }
+
+    Handler mAfterDown = new Handler() {
+        public void handleMessage(Message msg) {
+            Bitmap bit = (Bitmap)msg.obj;
+            if (bit == null) {
+                Log.i("modelhouse", "그림을 불러올 수 없음");
+            } else {
+                img.setImageBitmap(bit);
+            }
+        }
+    };
 }
 
 class Estate{
-    int id; int type; String photo; int price_type; String price; String monthly_price; String annual_price; String extent; String category; String usearea;
-    String facility; String addr1; Double latitude; Double longtitude; String info;
+    int id; String type; String photo; String price_type; String price; String extent; String category; String usearea;
+    String facility; String addr1; String info;
 
-    Estate(int id, int type, String photo, int price_type, String price, String monthly_price, String annual_price, String extent, String category, String usearea,
-           String facility, String addr1, Double latitude, Double longtitude, String info){
+    Estate(int id, String type, String photo, String price_type, String price, String extent, String category, String usearea,
+           String facility, String addr1, String info){
         this.id = id;
         this.type = type;
         this.photo = photo;
         this.price_type = price_type;
         this.price = price;
-        this.monthly_price = monthly_price;
-        this.annual_price = annual_price;
         this.extent = extent;
         this.category = category;
         this.usearea = usearea;
         this.facility = facility;
         this.addr1 = addr1;
-        this.latitude = latitude;
-        this.longtitude = longtitude;
         this.info = info;
     }
 }
+
+
