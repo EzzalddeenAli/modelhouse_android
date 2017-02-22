@@ -2,6 +2,7 @@ package com.platformstory.modelhouse;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -11,9 +12,11 @@ import android.os.NetworkOnMainThreadException;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +30,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends Activity {
     ProgressDialog mProgress;
+    ArrayList<Estate> estates;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +52,7 @@ public class MainActivity extends Activity {
         public void run() {
             String Json = Network.DownloadHtml(mAddr);
 
-            ArrayList<Estate> estates = new ArrayList<Estate>();
+            estates = new ArrayList<Estate>();
 
             //Log.i("modelhouse", Json);
 
@@ -81,11 +85,26 @@ public class MainActivity extends Activity {
         public void handleMessage(Message msg) {
             mProgress.dismiss();
 
-            EstateList estateList = new EstateList(MainActivity.this, R.layout.estate_list, (ArrayList<Estate>)msg.obj);
+            estates = (ArrayList<Estate>)msg.obj;
+
+            EstateList estateList = new EstateList(MainActivity.this, R.layout.estate_list, estates);
 
             ListView MyList = (ListView)findViewById(R.id.list);
             MyList.setAdapter(estateList);
 
+            MyList.setOnItemClickListener(estateDetail);
         }
+
+        AdapterView.OnItemClickListener estateDetail = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MainActivity.this, EstateDetailActivity.class);
+                intent.putExtra("estate_id", estates.get(position).id+"");
+
+                startActivity(intent);
+
+                //Toast.makeText(MainActivity.this, estates.get(position).id+"", Toast.LENGTH_LONG).show();
+            }
+        };
     };
 }
