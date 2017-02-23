@@ -10,8 +10,6 @@
     "usearea":"{{$estate->usearea}}",
     "facility":"{{$estate->facility}}",
     "addr1":"{{$estate->addr1}}",
-    <!--"latitude":"{{$estate->longtitude}}",
-    "longtitude":"{{$estate->longtitude}}",-->
     "info":"{{$estate->info}}"
 }
 ,

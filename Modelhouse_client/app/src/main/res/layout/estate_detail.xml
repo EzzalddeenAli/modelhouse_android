@@ -3,9 +3,84 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/estate_id"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="메인에서 호출한 서브 액티비티"/>
+        android:background="#FFA509"
+        android:padding="30px">
+
+        <TextView
+            android:id="@+id/prev_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="←"
+            android:textSize="50px"
+            android:textColor="#ffffff"
+            android:layout_alignParentLeft="true"/>
+
+        <TextView
+            android:id="@+id/title_addr1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="지역 목록"
+            android:textSize="50px"
+            android:textColor="#ffffff"
+            android:paddingLeft="40px"
+            android:layout_toRightOf="@+id/prev_btn"/>
+
+        <TextView
+            android:id="@+id/like_it"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="♡"
+            android:textSize="50px"
+            android:textColor="#ffffff"
+            android:layout_alignParentRight="true"/>
+        
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:background="#EDEDED"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <ImageView
+                android:id="@+id/detailed_photo"
+                android:layout_width="match_parent"
+                android:layout_height="500px"
+                android:scaleType="fitXY"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20px"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/estate_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="메인에서 호출한 서브 액티비티"/>
+
+                <RelativeLayout
+                    android:id="@+id/map_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="500px"
+                    />
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+
 </LinearLayout>
