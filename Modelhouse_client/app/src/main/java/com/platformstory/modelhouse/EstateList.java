@@ -109,10 +109,10 @@ public class EstateList extends BaseAdapter{
 
 class Estate{
     int id; String type; String photo; String price_type; String price; String extent; String category; String usearea;
-    String facility; String addr1; String info;
+    String facility; String addr1; String info; Double latitude; Double longtitude;
 
     Estate(int id, String type, String photo, String price_type, String price, String extent, String category, String usearea,
-           String facility, String addr1, String info){
+           String facility, String addr1, String info, Double latitude, Double longtitude){
         this.id = id;
         this.type = type;
         this.photo = photo;
@@ -124,6 +124,8 @@ class Estate{
         this.facility = facility;
         this.addr1 = addr1;
         this.info = info;
+        this.latitude = latitude;
+        this.longtitude = longtitude;
     }
 }
 

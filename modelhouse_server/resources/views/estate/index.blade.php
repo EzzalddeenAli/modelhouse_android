@@ -10,7 +10,9 @@
     "usearea":"{{$estate->usearea}}",
     "facility":"{{$estate->facility}}",
     "addr1":"{{$estate->addr1}}",
-    "info":"{{$estate->info}}"
+    "info":"{{$estate->info}}",
+    "latitude":"{{$estate->latitude}}",
+    "longtitude":"{{$estate->longtitude}}"
 }
 ,
 @endforeach

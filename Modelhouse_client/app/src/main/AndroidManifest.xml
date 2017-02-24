@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.platformstory.modelhouse">
 
+
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/big_logo"
@@ -14,9 +16,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".EstateSearchListActivity" android:label="EstateSearchListActivity"/>
         <activity android:name=".EstateDetailActivity" android:label="EstateDetailActivity"/>
+
+        <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyAniL85Y0xn7jzkOLiiKGn_C3__olAnvA8"/>
     </application>
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
 </manifest>

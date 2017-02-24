@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
 
@@ -22,9 +23,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class EstateDetailActivity extends Activity implements MapView.MapViewEventListener{
+public class EstateDetailActivity extends Activity implements MapView.MapViewEventListener, MapView.POIItemEventListener{
     ProgressDialog mProgress;
     ImageView img;
+    Double latitude;
+    Double longtitude;
 
     final String API_KEY = "c28ce2a178185b5577a869519a3ac74b";
 
@@ -34,6 +37,8 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
 
         Intent intent = getIntent();
         String estate_id = intent.getStringExtra("estate_id");
+        latitude = intent.getDoubleExtra("latitude", 37.3219085636);
+        longtitude = intent.getDoubleExtra("longtitude", 126.8308434601);
 
         mProgress = ProgressDialog.show(EstateDetailActivity.this, "Wait", "Downloading...");
 
@@ -54,6 +59,14 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
                 }
             }
         });
+
+        MapView mapView = new MapView(EstateDetailActivity.this);
+        mapView.setDaumMapApiKey(API_KEY);
+        mapView.setMapViewEventListener(EstateDetailActivity.this);
+        mapView.setPOIItemEventListener(EstateDetailActivity.this);
+
+        RelativeLayout mapViewContainer = (RelativeLayout) findViewById(R.id.map_view);
+        mapViewContainer.addView(mapView);
     }
 
     class EstateDetailThread extends Thread {
@@ -105,15 +118,7 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
                 TextView title_addr1 = (TextView)findViewById(R.id.title_addr1);
                 title_addr1.setText(estate.getString("addr1"));
 
-                //매물의 위치를 지도로 띄우는 작업 (시작)
-                MapView mapView = new MapView(EstateDetailActivity.this);
-                mapView.setDaumMapApiKey(API_KEY);
 
-                RelativeLayout mapViewContainer = (RelativeLayout) findViewById(R.id.map_view);
-                mapViewContainer.addView(mapView);
-
-                
-                //매물의 위치를 지도로 띄우는 작업 (끝)
             }catch (JSONException e){
 
             }
@@ -138,7 +143,18 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
 
     @Override
     public void onMapViewInitialized(MapView mapView) {
+        mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(latitude, longtitude), true);
 
+        MapPOIItem marker = new MapPOIItem();
+        marker.setItemName("Default Marker");
+        marker.setTag(0);
+        marker.setMapPoint(MapPoint.mapPointWithGeoCoord(latitude, longtitude));
+        marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
+        marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+
+        mapView.addPOIItem(marker);
+        mapView.selectPOIItem(marker, true);
+        mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(latitude, longtitude), false);
     }
 
     @Override
@@ -178,6 +194,27 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
 
     @Override
     public void onMapViewMoveFinished(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+
+    @Override
+    public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
+
+    }
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
+
+    }
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
+
+    }
+
+    @Override
+    public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {
 
     }
 }
