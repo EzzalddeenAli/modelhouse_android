@@ -12,5 +12,12 @@
         android:layout_height="wrap_content"
         android:text="매물 검색"/>
 
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        />
+
 
 </LinearLayout>
