@@ -24,9 +24,12 @@ public class EstateSearchListActivity  extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.estate_search_list);
 
+//        Intent intent = getIntent();
+//        String JSON = intent.getStringExtra("JSON");
+
         mProgress = ProgressDialog.show(EstateSearchListActivity.this, "Wait", "Downloading...");
 
-        DownThread  thread = new DownThread("http://52.79.106.71/estates");
+        DownThread  thread = new DownThread("http://52.79.106.71/estates?latitude=37.5668260055&longtitude=126.9786567859");
         thread.start();
     }
 
