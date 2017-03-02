@@ -25,6 +25,8 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.algo.GridBasedAlgorithm;
+import com.google.maps.android.clustering.algo.PreCachingAlgorithmDecorator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -87,6 +89,7 @@ public class MainActivity extends FragmentActivity {
         public void handleMessage(Message msg) {
             mProgress.dismiss();
 
+
             try{
                 JSON = (String)msg.obj;
                 ja = new JSONArray(JSON);
@@ -96,6 +99,8 @@ public class MainActivity extends FragmentActivity {
                     // 지도의 중심이 바뀌면 바뀐 지도의 좌표, 줌 값을 토대로 지도 중심 반경 내의 매물을 검색하여 클러스터로 띄움
                     @Override
                     public void onCameraChange(CameraPosition cameraPosition) {
+                        gMap.clear();
+
                         super.onCameraChange(cameraPosition);
 
                         latitude = cameraPosition.target.latitude;
