@@ -50,11 +50,35 @@
             android:orientation="vertical"
             >
 
-            <ImageView
-                android:id="@+id/detailed_photo"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="500px"
-                android:scaleType="fitXY"/>
+                android:layout_height="500px">
+                <AdapterViewFlipper
+                    android:id="@+id/detailed_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="500px"
+                    android:flipInterval="5000"/>
+
+                <Button
+                    android:id="@+id/showPrev"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PREV"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentBottom="true">
+                </Button>
+
+                <Button
+                    android:id="@+id/showNext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Next"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true">
+                </Button>
+
+            </RelativeLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"

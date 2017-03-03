@@ -64,9 +64,29 @@ public class MainActivity extends FragmentActivity {
         gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), zoom));
 
+        //매물 검색 필터 버튼 선언 및 클릭 리스너 등록
+        Button search_filter = (Button)findViewById(R.id.search_filter);
+        search_filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SearchFilterArea.class);
+                startActivityForResult(intent, 0);
+            }
+        });
+
         // 지도의 좌표, 줌 값을 토대로 지도 중심 반경 내의 매물을 검색하여 클러스터로 띄움
         EstateSearchMapThread thread = new EstateSearchMapThread("http://52.79.106.71/estates?latitude="+latitude+"&longtitude="+longitude+"&zoom="+zoom);
         thread.start();
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        switch(requestCode){
+            case 0 :
+                if(resultCode == RESULT_OK){
+                    //검색 필터에 의한 결과 JSON 값을 토대로 지도에 뿌려주는 로직을 작성
+                }
+                break;
+        }
     }
 
     class EstateSearchMapThread extends Thread {

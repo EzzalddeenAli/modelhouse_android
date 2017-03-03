@@ -3,6 +3,7 @@ package com.platformstory.modelhouse;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -10,7 +11,13 @@ import android.os.Handler;
 import android.os.Message;
 
 import android.util.Log;
+import android.view.DragEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterViewFlipper;
+import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,11 +30,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class EstateDetailActivity extends Activity implements MapView.MapViewEventListener, MapView.POIItemEventListener{
     ProgressDialog mProgress;
     ImageView img;
     Double latitude;
     Double longtitude;
+    AdapterViewFlipper avf;
+    ArrayList<Bitmap> bitmaps;
 
     final String API_KEY = "c28ce2a178185b5577a869519a3ac74b";
 
@@ -44,9 +55,6 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
 
         EstateDetailThread  thread = new EstateDetailThread("http://52.79.106.71/estates/"+estate_id);
         thread.start();
-
-        DownImageThread thread1 = new DownImageThread("http://cfile6.uf.tistory.com/image/213A6A4E588A9304335C66");
-        thread1.start();
 
         final TextView like_it = (TextView)findViewById(R.id.like_it);
         like_it.setOnClickListener(new View.OnClickListener() {
@@ -86,17 +94,22 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
     }
 
     class DownImageThread extends Thread{
-        String mAddr;
+        ArrayList<String> imageUrls;
 
-        DownImageThread(String addr) {
-            mAddr = addr;
+        DownImageThread(ArrayList<String> imageUrls) {
+            this.imageUrls = imageUrls;
         }
 
         public void run() {
-            Bitmap bit = Network.DownloadImage(mAddr);
+            bitmaps = new ArrayList<Bitmap>();
+
+            for(int i=0; i<imageUrls.size(); i++){
+                Bitmap bit = Network.DownloadImage(imageUrls.get(i));
+                bitmaps.add(bit);
+            }
 
             Message message = mAfterDownImage.obtainMessage();
-            message.obj = bit;
+            message.obj = bitmaps;
             mAfterDownImage.sendMessage(message);
         }
     }
@@ -109,6 +122,17 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
                 JSONArray ja = new JSONArray((String)msg.obj);
 
                 JSONObject estate = ja.getJSONObject(0);
+
+                // 추후 estate.getString("photo")를 콤마(,)를 기준으로 배열로 쪼개어 반복문을 돌릴 예정
+                ArrayList<String> imageUrls = new ArrayList<String>();
+                imageUrls.add("http://blogfiles7.naver.net/data44/2009/1/18/198/21_goback2u.jpg");
+                imageUrls.add("http://cfile6.uf.tistory.com/image/213A6A4E588A9304335C66");
+                imageUrls.add("http://blogfiles3.naver.net/data41/2008/11/23/146/jinhae_62_goback2u_goback2u.jpg");
+                imageUrls.add("http://blogfiles9.naver.net/data41/2009/1/18/24/08_goback2u.jpg");
+
+
+                DownImageThread thread1 = new DownImageThread(imageUrls);
+                thread1.start();
 
 //                Log.i("modelhouse", estate.getInt("id")+ estate.getString("type")+estate.getString("photo")+ estate.getString("price_type")+
 //                        estate.getString("price")+
@@ -131,13 +155,25 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
 
     Handler mAfterDownImage = new Handler(){
         public void handleMessage(Message msg){
-            img = (ImageView)findViewById(R.id.detailed_photo);
-            Bitmap bit = (Bitmap)msg.obj;
-            if (bit == null) {
-                Log.i("modelhouse", "그림을 불러올 수 없음");
-            } else {
-                img.setImageBitmap(bit);
-            }
+            bitmaps = (ArrayList<Bitmap>)msg.obj;
+
+            avf = (AdapterViewFlipper) findViewById(R.id.detailed_photo);
+            avf.setAdapter(new galleryAdapter(EstateDetailActivity.this));
+            avf.startFlipping();
+
+            ((Button)findViewById(R.id.showPrev)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    avf.showPrevious();
+                }
+            });
+
+            ((Button)findViewById(R.id.showNext)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    avf.showNext();
+                }
+            });
         }
     };
 
@@ -217,4 +253,42 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
     public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {
 
     }
+
+    public class galleryAdapter extends BaseAdapter{
+        private final Context mContext;
+        LayoutInflater inflater;
+
+        public galleryAdapter(Context c){
+            mContext = c;
+            inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+
+        @Override
+        public int getCount() {
+            return bitmaps.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return position;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if(convertView==null){
+                convertView = inflater.inflate(R.layout.estate_detail_photo, parent, false);
+            }
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
+            imageView.setImageBitmap(bitmaps.get(position));
+
+            return convertView;
+        }
+    }
 }
+
+
