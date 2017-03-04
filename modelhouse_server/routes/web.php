@@ -16,3 +16,6 @@ Route::get('/', function () {
 });
 
 Route::resource('/estates', 'EstateController');
+Route::get('/address', 'AddressController@address');
+
+

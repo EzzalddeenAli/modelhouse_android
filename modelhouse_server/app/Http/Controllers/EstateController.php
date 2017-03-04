@@ -10,7 +10,7 @@ use DB;
 
 class EstateController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $latitude = $request->input('latitude');
         $longtitude = $request->input('longtitude');
