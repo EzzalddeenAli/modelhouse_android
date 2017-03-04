@@ -223,7 +223,7 @@
                     android:textColor="#000000"
                     rsb:valuesAboveThumbs="false"
                     rsb:absoluteMinValue="0"
-                    rsb:absoluteMaxValue="1000"
+                    rsb:absoluteMaxValue="10000"
                     rsb:step="10" />
 
             </LinearLayout>
@@ -265,7 +265,7 @@
                     android:textColor="#000000"
                     rsb:valuesAboveThumbs="false"
                     rsb:absoluteMinValue="0"
-                    rsb:absoluteMaxValue="1000"
+                    rsb:absoluteMaxValue="10000"
                     rsb:step="10" />
 
                 <RadioGroup
@@ -322,7 +322,7 @@
                     android:textColor="#000000"
                     rsb:valuesAboveThumbs="false"
                     rsb:absoluteMinValue="0"
-                    rsb:absoluteMaxValue="1000"
+                    rsb:absoluteMaxValue="10000"
                     rsb:step="10" />
 
             </LinearLayout>

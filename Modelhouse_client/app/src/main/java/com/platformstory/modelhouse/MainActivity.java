@@ -79,11 +79,63 @@ public class MainActivity extends FragmentActivity {
         thread.start();
     }
 
+    //인텐트로 결과를 받아오면 위도, 경도를 토대로 지도를 이동하고 클러스터 리스너 등록하는 로직을 여기에 작성
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         switch(requestCode){
             case 0 :
                 if(resultCode == RESULT_OK){
-                    //검색 필터에 의한 결과 JSON 값을 토대로 지도에 뿌려주는 로직을 작성
+                    try{
+                        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(data.getStringExtra("latitude")), Double.parseDouble(data.getStringExtra("longitude"))), zoom));
+
+                        String JSON1 = data.getStringExtra("searchJSON");
+                        JSONArray ja1 = new JSONArray(JSON1);
+
+                        //위도, 경도 값들을 토대로 지도에 클러스트를 만들고, 리스트 버튼 클릭 시 제이슨 배열을 인텐트로 넘겨주는 로직을 이곳에 작성
+                        mClusterManager = new ClusterManager<MyItem>(MainActivity.this, gMap){
+                            // 지도의 중심이 바뀌면 바뀐 지도의 좌표, 줌 값을 토대로 지도 중심 반경 내의 매물을 검색하여 클러스터로 띄움
+                            @Override
+                            public void onCameraChange(CameraPosition cameraPosition) {
+                                gMap.clear();
+
+                                super.onCameraChange(cameraPosition);
+
+                                latitude = cameraPosition.target.latitude;
+                                longitude = cameraPosition.target.longitude;
+
+                                EstateSearchMapThread thread2 = new EstateSearchMapThread("http://52.79.106.71/estates?latitude="+latitude+"&longtitude="+longitude+"&zoom="+zoom);
+                                thread2.start();
+//                                EstateSearchMapThread thread2 = new EstateSearchMapThread("http://52.79.106.71/search?addr_si_id="+addr_si_id+"&addr_gu_id="+addr_gu_id+"&addr_dong_id="+addr_dong_id
+//                                        +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
+//                                        +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
+//                                        +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
+//                                thread2.start();
+                            }
+                        };
+
+                        gMap.setOnCameraChangeListener(mClusterManager);
+                        gMap.setOnMarkerClickListener(mClusterManager);
+
+                        addItems(ja1);
+
+
+                    }catch (JSONException e){
+
+                    }
+
+                    // 텍스트뷰에 검색 결과의 개수를 표시한다.
+                    TextView result_count = (TextView)findViewById(R.id.result_count);
+                    result_count.setText(ja.length() + "개");
+
+                    // 이 버튼을 클릭하면 해당 지역(지도 중심 반경)의 검색 결과 개수만큼 리스트로 보여주는 페이지로 이동
+                    Button button = (Button)findViewById(R.id.button);
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(MainActivity.this, EstateSearchListActivity.class);
+                            intent.putExtra("JSON", JSON);
+                            startActivity(intent);
+                        }
+                    });
                 }
                 break;
         }

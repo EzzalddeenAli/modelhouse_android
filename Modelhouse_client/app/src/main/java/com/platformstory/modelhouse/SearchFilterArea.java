@@ -46,22 +46,22 @@ public class SearchFilterArea extends Activity {
     int[] gu_ids;
     int[] dong_ids;
 
-    int addr_si_id;
-    int addr_gu_id;
-    int addr_dong_id;
+    int addr_si_id=0;
+    int addr_gu_id=0;
+    int addr_dong_id=0;
 
-    int estate_type;
-    int deal_type;
-    int price_type;
+    int estate_type=0;
+    int deal_type=0;
+    int price_type=0;
 
-    int price_from;
-    int price_to;
-    int monthly_from;
-    int monthly_to;
-    int extent_from;
-    int extent_to;
+    int price_from=0;
+    int price_to=10000;
+    int monthly_from=0;
+    int monthly_to=10000;
+    int extent_from=0;
+    int extent_to=10000;
 
-    int monthly_annual;
+    int monthly_annual=0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -266,15 +266,15 @@ public class SearchFilterArea extends Activity {
                 monthly_annual_rg.clearCheck();
 
                 price_range_rs.setSelectedMinValue(0);
-                price_range_rs.setSelectedMaxValue(1000);
+                price_range_rs.setSelectedMaxValue(10000);
                 ((TextView)findViewById(R.id.price_range_tv)).setText("0~제한없음");
 
                 monthly_range_rs.setSelectedMinValue(0);
-                monthly_range_rs.setSelectedMaxValue(1000);
+                monthly_range_rs.setSelectedMaxValue(10000);
                 ((TextView)findViewById(R.id.extent_range_tv)).setText("0~제한없음");
 
                 extent_range_rs.setSelectedMinValue(0);
-                extent_range_rs.setSelectedMaxValue(1000);
+                extent_range_rs.setSelectedMaxValue(10000);
                 ((TextView)findViewById(R.id.monthly_range_tv)).setText("0~제한없음");
 
                 gu_list=null;
@@ -292,11 +292,11 @@ public class SearchFilterArea extends Activity {
                 price_type=0;
 
                 price_from=0;
-                price_to=1000;
+                price_to=10000;
                 monthly_from=0;
-                monthly_to=1000;
+                monthly_to=10000;
                 extent_from=0;
-                extent_to=1000;
+                extent_to=10000;
 
                 monthly_annual=0;
             }
@@ -306,17 +306,42 @@ public class SearchFilterArea extends Activity {
         ((Button)findViewById(R.id.submit)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("modelhouse", addr_si_id + ", " + addr_gu_id + ", " + addr_dong_id);
+                Log.i("modelhouse", "http://52.79.106.71/search?addr_si_id="+addr_si_id+"&addr_gu_id="+addr_gu_id+"&addr_dong_id="+addr_dong_id
+                                        +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
+                                        +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
+                                        +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
 
-                Log.i("modelhouse", estate_type + ", " + deal_type + ", " + price_type);
-
-                Log.i("modelhouse", price_from + "~" + price_to);
-                Log.i("modelhouse", monthly_from + "~" + monthly_to);
-                Log.i("modelhouse", extent_from + "~" + extent_to);
-
-                Log.i("modelhouse", monthly_annual+"");
+                SearchThread searchThread
+                        = new SearchThread("http://52.79.106.71/search?addr_si_id="+addr_si_id+"&addr_gu_id="+addr_gu_id+"&addr_dong_id="+addr_dong_id
+                                            +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
+                                            +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
+                                            +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
+                searchThread.start();
             }
         });
+    }
+
+    class SearchThread extends Thread{
+        String mAddr;
+
+        SearchThread(String mAddr){
+            this.mAddr = mAddr;
+        }
+
+        public void run(){
+            String[] searchResult = Network.DownloadHtml(mAddr).split("`");
+
+            String latitude = searchResult[0];
+            String longitude = searchResult[1];
+            String searchJSON = searchResult[2];
+
+            Intent intent = new Intent();
+            intent.putExtra("latitude", latitude);
+            intent.putExtra("longitude", longitude);
+            intent.putExtra("searchJSON", searchJSON);
+            setResult(RESULT_OK, intent);
+            finish();
+        }
     }
 
     // 매물의 주소(시,구,동)를 선택을 위한 네트워크 접속을 위한 스레드
