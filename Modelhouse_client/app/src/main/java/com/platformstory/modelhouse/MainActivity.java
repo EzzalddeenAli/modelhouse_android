@@ -45,7 +45,24 @@ public class MainActivity extends FragmentActivity {
 
     String JSON;
     JSONArray ja;
+
+    int estate_type;
+    int deal_type;
+    int price_type;
+
+    int price_from;
+    int price_to;
+    int monthly_from;
+    int monthly_to;
+    int extent_from;
+    int extent_to;
+
+    int monthly_annual;
+
     ProgressDialog mProgress;
+
+    TextView result_count;
+    Button view_list;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,11 +70,33 @@ public class MainActivity extends FragmentActivity {
 
         mProgress = ProgressDialog.show(MainActivity.this, "Wait", "Downloading...");
 
-        //앱이 종료되었을 때 지도의 좌표, 줌 값을 가져와 그대로 반영, 설정값이 없을 경우 서울을 중심으로 보여줌
+
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+
+        //앱이 종료되었을 때 지도의 좌표, 줌 값을 가져와 그대로 반영, 설정값이 없을 경우 서울을 중심으로 보여줌
         latitude = Double.parseDouble(settings.getString("latitude", "37.5668260055"));
         longitude = Double.parseDouble(settings.getString("longitude", "126.9786567859"));
         zoom = settings.getInt("zoom", 14);
+
+        //앱이 종료되었을 때 검색 필터의 값을 가져온다. 검색 필터의 값이 설정되어 있는 경우는 설정된 필터대로 지도 및 리스트 검색 수행
+        estate_type = settings.getInt("estate_type", 0);
+        deal_type = settings.getInt("deal_type", 0);
+        price_type = settings.getInt("price_type", 0);
+
+        price_from = settings.getInt("price_from", 0);
+        price_to = settings.getInt("price_to", 10000);
+        monthly_from = settings.getInt("monthly_from", 0);
+        monthly_to = settings.getInt("monthly_to", 10000);
+        extent_from = settings.getInt("extent_from", 0);
+        extent_to = settings.getInt("extent_to", 10000);
+
+        monthly_annual = settings.getInt("monthly_annual", 0);
+
+        if(!(estate_type==0 && deal_type==0 && price_type==0 && price_from==0 && price_to==10000 && monthly_from==0 && monthly_to==10000 && extent_from==0 && extent_to==10000 && monthly_annual==0)){
+            Toast.makeText(MainActivity.this, "검색 필터가 적용됩니다.", Toast.LENGTH_LONG).show();
+        }
+
+
 
         // 지도 객체를 생성하고 지도를 표시한 후 좌표, 줌 값을 토대로 중심을 이동
         gMap = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
@@ -70,6 +109,20 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SearchFilterArea.class);
+
+                intent.putExtra("estate_type", estate_type);
+                intent.putExtra("deal_type", deal_type);
+                intent.putExtra("price_type", price_type);
+
+                intent.putExtra("price_from", price_from);
+                intent.putExtra("price_to", price_to);
+                intent.putExtra("monthly_from", monthly_from);
+                intent.putExtra("monthly_to", monthly_to);
+                intent.putExtra("extent_from", extent_from);
+                intent.putExtra("extent_to", extent_to);
+
+                intent.putExtra("monthly_annual", monthly_annual);
+
                 startActivityForResult(intent, 0);
             }
         });
@@ -87,8 +140,25 @@ public class MainActivity extends FragmentActivity {
                     try{
                         gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(data.getStringExtra("latitude")), Double.parseDouble(data.getStringExtra("longitude"))), zoom));
 
-                        String JSON1 = data.getStringExtra("searchJSON");
-                        JSONArray ja1 = new JSONArray(JSON1);
+                        JSON = data.getStringExtra("searchJSON");
+                        ja = new JSONArray(JSON);
+
+                        estate_type = data.getIntExtra("estate_type", 0);
+                        deal_type = data.getIntExtra("deal_type", 0);
+                        price_type = data.getIntExtra("price_type", 0);
+
+                        price_from = data.getIntExtra("price_from", 0);
+                        price_to = data.getIntExtra("price_to", 10000);
+                        monthly_from = data.getIntExtra("monthly_from", 0);
+                        monthly_to = data.getIntExtra("monthly_to", 10000);
+                        extent_from = data.getIntExtra("extent_from", 0);
+                        extent_to = data.getIntExtra("extent_to", 10000);
+
+                        monthly_annual = data.getIntExtra("monthly_annual", 0);
+
+                        if(!(estate_type==0 && deal_type==0 && price_type==0 && price_from==0 && price_to==10000 && monthly_from==0 && monthly_to==10000 && extent_from==0 && extent_to==10000 && monthly_annual==0)){
+                            Toast.makeText(MainActivity.this, "검색 필터가 적용됩니다.", Toast.LENGTH_LONG).show();
+                        }
 
                         //위도, 경도 값들을 토대로 지도에 클러스트를 만들고, 리스트 버튼 클릭 시 제이슨 배열을 인텐트로 넘겨주는 로직을 이곳에 작성
                         mClusterManager = new ClusterManager<MyItem>(MainActivity.this, gMap){
@@ -101,21 +171,24 @@ public class MainActivity extends FragmentActivity {
 
                                 latitude = cameraPosition.target.latitude;
                                 longitude = cameraPosition.target.longitude;
-
-                                EstateSearchMapThread thread2 = new EstateSearchMapThread("http://52.79.106.71/estates?latitude="+latitude+"&longtitude="+longitude+"&zoom="+zoom);
-                                thread2.start();
-//                                EstateSearchMapThread thread2 = new EstateSearchMapThread("http://52.79.106.71/search?addr_si_id="+addr_si_id+"&addr_gu_id="+addr_gu_id+"&addr_dong_id="+addr_dong_id
+//
+//                                Log.i("modelhouse", "http://52.79.106.71/search?latitude="+latitude+"&longitude="+longitude
 //                                        +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
 //                                        +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
 //                                        +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
-//                                thread2.start();
+
+                                EstateSearchMapThread thread2 = new EstateSearchMapThread("http://52.79.106.71/search?latitude="+latitude+"&longitude="+longitude
+                                        +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
+                                        +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
+                                        +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
+                                thread2.start();
                             }
                         };
 
                         gMap.setOnCameraChangeListener(mClusterManager);
                         gMap.setOnMarkerClickListener(mClusterManager);
 
-                        addItems(ja1);
+                        addItems(ja);
 
 
                     }catch (JSONException e){
@@ -123,12 +196,12 @@ public class MainActivity extends FragmentActivity {
                     }
 
                     // 텍스트뷰에 검색 결과의 개수를 표시한다.
-                    TextView result_count = (TextView)findViewById(R.id.result_count);
+//                    result_count = (TextView)findViewById(R.id.result_count);
                     result_count.setText(ja.length() + "개");
 
                     // 이 버튼을 클릭하면 해당 지역(지도 중심 반경)의 검색 결과 개수만큼 리스트로 보여주는 페이지로 이동
-                    Button button = (Button)findViewById(R.id.button);
-                    button.setOnClickListener(new View.OnClickListener() {
+//                    Button button = (Button)findViewById(R.id.button);
+                    view_list.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent intent = new Intent(MainActivity.this, EstateSearchListActivity.class);
@@ -161,7 +234,6 @@ public class MainActivity extends FragmentActivity {
         public void handleMessage(Message msg) {
             mProgress.dismiss();
 
-
             try{
                 JSON = (String)msg.obj;
                 ja = new JSONArray(JSON);
@@ -177,9 +249,29 @@ public class MainActivity extends FragmentActivity {
 
                         latitude = cameraPosition.target.latitude;
                         longitude = cameraPosition.target.longitude;
+//
+//                        Log.i("modelhouse",      estate_type +", "+
+//                         deal_type+", "+
+//                         price_type+", "+
+//
+//                         price_from+", "+
+//                         price_to+", "+
+//                         monthly_from+", "+
+//                         monthly_to+", "+
+//                         extent_from+", "+
+//                         extent_to+", "+
+//                         monthly_annual);
 
-                        EstateSearchMapThread thread2 = new EstateSearchMapThread("http://52.79.106.71/estates?latitude="+latitude+"&longtitude="+longitude+"&zoom="+zoom);
-                        thread2.start();
+                        if(estate_type==0 && deal_type==0 && price_type==0 && price_from==0 && price_to==10000 && monthly_from==0 && monthly_to==10000 && extent_from==0 && extent_to==10000 && monthly_annual==0){
+                            EstateSearchMapThread thread2 = new EstateSearchMapThread("http://52.79.106.71/estates?latitude="+latitude+"&longtitude="+longitude+"&zoom="+zoom);
+                            thread2.start();
+                        }else{
+                            EstateSearchMapThread thread2 = new EstateSearchMapThread("http://52.79.106.71/search?latitude="+latitude+"&longitude="+longitude
+                                    +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
+                                    +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
+                                    +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
+                            thread2.start();
+                        }
                     }
                 };
 
@@ -192,12 +284,12 @@ public class MainActivity extends FragmentActivity {
             }
 
             // 텍스트뷰에 검색 결과의 개수를 표시한다.
-            TextView result_count = (TextView)findViewById(R.id.result_count);
+            result_count = (TextView)findViewById(R.id.result_count);
             result_count.setText(ja.length() + "개");
 
             // 이 버튼을 클릭하면 해당 지역(지도 중심 반경)의 검색 결과 개수만큼 리스트로 보여주는 페이지로 이동
-            Button button = (Button)findViewById(R.id.button);
-            button.setOnClickListener(new View.OnClickListener() {
+            view_list = (Button)findViewById(R.id.button);
+            view_list.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(MainActivity.this, EstateSearchListActivity.class);
@@ -238,7 +330,7 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    //앱이 종료되면 현재 지도의 좌표, 줌 값을 저장
+    //앱이 종료되면 현재 지도의 좌표, 줌, 검색 필터 값을 저장
     @Override
     public void onStop(){
         super.onStop();
@@ -248,6 +340,21 @@ public class MainActivity extends FragmentActivity {
         editor.putString("latitude", latitude+"");
         editor.putString("longitude", longitude+"");
         editor.putInt("zoom", zoom);
+
+        editor.putInt("estate_type", estate_type);
+        editor.putInt("deal_type", deal_type);
+        editor.putInt("price_type", price_type);
+
+        editor.putInt("price_from", price_from);
+        editor.putInt("price_to", price_to);
+        editor.putInt("monthly_from", monthly_from);
+        editor.putInt("monthly_to", monthly_to);
+        editor.putInt("extent_from", extent_from);
+        editor.putInt("extent_to", extent_to);
+
+        editor.putInt("monthly_annual", monthly_annual);
+
+
         editor.commit();
     }
 

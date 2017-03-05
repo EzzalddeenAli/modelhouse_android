@@ -33,12 +33,26 @@ class SearchController extends Controller
         }elseif($addr_si_id!=0){
             $latitude=addr_sie::where('id', $addr_si_id)->value('latitude');
             $longitude=addr_sie::where('id', $addr_si_id)->value('longtitude');
+        }else{
+            $latitude = $request->input('latitude');
+            $longitude = $request->input('longitude');
         }
 
         $query = DB::table('estates')->join('estate_categories', 'estates.id', '=', 'estate_categories.estate_id')
                         ->select('estates.id', 'estates.price_type', 'estates.photo', 'estates.monthly_price', 'estates.info', 'estates.annual_price', 'estates.price',
                                 'estates.type', 'estates.extent', 'estate_categories.category', 'estate_categories.usearea', 'estates.facility', 
                                 'estates.addr1', 'estates.latitude', 'estates.longtitude')
+                        ->when($addr_gu_id!=0, function ($query) use ($addr_gu_id){
+                                return  $query->where('estates.addr_gu_id', $addr_gu_id);
+                        })
+                        ->when($addr_si_id!=0, function ($query) use ($addr_si_id){
+                                return  $query->where('estates.addr_si_id', $addr_si_id);
+                        })                                
+                        ->when( ($addr_gu_id==0 && $addr_si_id==0), function ($query) use ($latitude, $longitude){
+                                return $query->where(DB::raw("6371 * 2 * ATAN2(SQRT(POW(SIN(RADIANS(latitude - $latitude)/2), 2) + POW(SIN(RADIANS(longtitude - $longitude)/2), 2) *
+                                                            COS(RADIANS($latitude)) * COS(RADIANS(latitude))), SQRT(1 - POW(SIN(RADIANS(latitude - $latitude)/2), 2) + POW(SIN(RADIANS(longtitude - $longitude)/2), 2)
+                                                            * COS(RADIANS($latitude)) * COS(RADIANS(latitude))))"), "<=", 8);
+                        })
                         ->when($estate_type!=0, function ($query) use ($estate_type) {
                             return $query->where('estates.type', $estate_type);
                         })
@@ -79,7 +93,14 @@ class SearchController extends Controller
                                 return $query->where('estates.annual_price', $monthly_from);
                         }) 
                         ->get();
-        return view('search.result')->with(['latitude'=>$latitude, 'longitude'=>$longitude, 'results'=>$query]);
+
+        if($addr_gu_id==0 && $addr_si_id==0){
+            return view('search.result')->with('results', $query);
+        }else{
+            return view('search.result')->with(['latitude'=>$latitude, 'longitude'=>$longitude, 'results'=>$query]);
+        }
+
+
     }
 
 

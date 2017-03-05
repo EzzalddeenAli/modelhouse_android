@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.maps.android.clustering.ClusterManager;
@@ -50,24 +51,101 @@ public class SearchFilterArea extends Activity {
     int addr_gu_id=0;
     int addr_dong_id=0;
 
-    int estate_type=0;
-    int deal_type=0;
-    int price_type=0;
+    int estate_type;
+    int deal_type;
+    int price_type;
 
-    int price_from=0;
-    int price_to=10000;
-    int monthly_from=0;
-    int monthly_to=10000;
-    int extent_from=0;
-    int extent_to=10000;
+    int price_from;
+    int price_to;
+    int monthly_from;
+    int monthly_to;
+    int extent_from;
+    int extent_to;
 
-    int monthly_annual=0;
+    int monthly_annual;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_filter_area);
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // 만일 검색 필터를 적용 후 다시 검색 필터 화면이 로딩되었을 시 이전 필터 값을 불러와서 설정해 둠
+        Intent intent = getIntent();
+        estate_type = intent.getIntExtra("estate_type", 0);
+        deal_type = intent.getIntExtra("deal_type", 0);
+        price_type = intent.getIntExtra("price_type", 0);
+
+        price_from = intent.getIntExtra("price_from", 0);
+        price_to = intent.getIntExtra("price_to", 10000);
+        monthly_from = intent.getIntExtra("monthly_from", 0);
+        monthly_to = intent.getIntExtra("monthly_to", 10000);
+        extent_from = intent.getIntExtra("extent_from", 0);
+        extent_to = intent.getIntExtra("extent_to", 10000);
+
+        monthly_annual = intent.getIntExtra("monthly_annual", 0);
+
+        // 검색 항목 선택을 위한 라디오 그룹과 RangeSeekBar 변수 선언
+        estate_type_rg = (RadioGroup)findViewById(R.id.estate_type);
+        deal_type_rg = (RadioGroup)findViewById(R.id.deal_type);
+        price_type_rg = (RadioGroup)findViewById(R.id.price_type);
+
+        price_range_rs = (RangeSeekBar) findViewById(R.id.price_range);
+        monthly_range_rs = (RangeSeekBar) findViewById(R.id.monthly_range);
+        extent_range_rs = (RangeSeekBar) findViewById(R.id.extent_range);
+
+        monthly_annual_rg = (RadioGroup)findViewById(R.id.monthly_or_annual);
+
+        // 이전 필터 값을 가져와서 라디오 그룹과 RangeSeekBar에 값 설정
+        switch(estate_type){
+            case 1 :
+                estate_type_rg.check(R.id.land);
+                break;
+            case 2 :
+                estate_type_rg.check(R.id.building);
+                break;
+        }
+
+        switch(deal_type){
+            case 1 :
+                deal_type_rg.check(R.id.office);
+                break;
+            case 2 :
+                deal_type_rg.check(R.id.direct);
+                break;
+        }
+
+        switch(price_type){
+            case 1 :
+                price_type_rg.check(R.id.trade);
+                break;
+            case 2 :
+                price_type_rg.check(R.id.lent);
+                break;
+            case 3 :
+                price_type_rg.check(R.id.monthly);
+                break;
+        }
+
+        switch(monthly_annual){
+            case 1 :
+                monthly_annual_rg.check(R.id.month);
+                break;
+            case 2 :
+                monthly_annual_rg.check(R.id.annual);
+                break;
+        }
+
+        price_range_rs.setSelectedMinValue(price_from);
+        price_range_rs.setSelectedMaxValue(price_to);
+
+        monthly_range_rs.setSelectedMinValue(monthly_from);
+        monthly_range_rs.setSelectedMaxValue(monthly_to);
+
+        extent_range_rs.setSelectedMinValue(extent_from);
+        extent_range_rs.setSelectedMaxValue(extent_to);
+
+///////////////////////////////////////////////////////////////////////////////////////
         //시-구-동 선택을 위한 텍스트 뷰 선언과 리스너 등록
         si = (TextView)findViewById(R.id.si);
         gu = (TextView)findViewById(R.id.gu);
@@ -146,8 +224,9 @@ public class SearchFilterArea extends Activity {
             }
         });
 
+/////////////////////////////////////////////////////////////////////////////////
+
         // 토지-건물 라디오를 선택하였을 때
-        estate_type_rg = (RadioGroup)findViewById(R.id.estate_type);
         estate_type_rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -163,7 +242,6 @@ public class SearchFilterArea extends Activity {
         });
 
         // 중개사무소-직거래 라디오를 선택하였을 때
-        deal_type_rg = (RadioGroup)findViewById(R.id.deal_type);
         deal_type_rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -179,7 +257,6 @@ public class SearchFilterArea extends Activity {
         });
 
         // 매매-전세-임대 라디오를 선택하였을 때
-        price_type_rg = (RadioGroup)findViewById(R.id.price_type);
         price_type_rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -204,7 +281,6 @@ public class SearchFilterArea extends Activity {
         });
 
         // 가격 설정
-        price_range_rs = (RangeSeekBar) findViewById(R.id.price_range);
         price_range_rs.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener(){
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar bar, Object minValue, Object maxValue) {
@@ -215,7 +291,6 @@ public class SearchFilterArea extends Activity {
         });
 
         // 임대료 설정
-        monthly_range_rs = (RangeSeekBar) findViewById(R.id.monthly_range);
         monthly_range_rs.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener(){
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar bar, Object minValue, Object maxValue) {
@@ -226,7 +301,6 @@ public class SearchFilterArea extends Activity {
         });
 
         // 면적 설정
-        extent_range_rs = (RangeSeekBar) findViewById(R.id.extent_range);
         extent_range_rs.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener(){
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar bar, Object minValue, Object maxValue) {
@@ -237,7 +311,6 @@ public class SearchFilterArea extends Activity {
         });
 
         // 월세-년세 설정
-        monthly_annual_rg = (RadioGroup)findViewById(R.id.monthly_or_annual);
         monthly_annual_rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -251,6 +324,8 @@ public class SearchFilterArea extends Activity {
                 }
             }
         });
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 
         // 초기화 버튼을 누르면 모든 선택된 것들을 초기화시키고 필터 변수들 또한 초기화 시킴
         ((Button)findViewById(R.id.reset)).setOnClickListener(new View.OnClickListener() {
@@ -306,20 +381,22 @@ public class SearchFilterArea extends Activity {
         ((Button)findViewById(R.id.submit)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("modelhouse", "http://52.79.106.71/search?addr_si_id="+addr_si_id+"&addr_gu_id="+addr_gu_id+"&addr_dong_id="+addr_dong_id
-                                        +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
-                                        +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
-                                        +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
-
-                SearchThread searchThread
-                        = new SearchThread("http://52.79.106.71/search?addr_si_id="+addr_si_id+"&addr_gu_id="+addr_gu_id+"&addr_dong_id="+addr_dong_id
-                                            +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
-                                            +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
-                                            +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
-                searchThread.start();
+                //반드시 지역을 선택해야 검색 로직이 수행됨
+                if(addr_si_id==0 && addr_gu_id==0 && addr_dong_id==0){
+                    Toast.makeText(SearchFilterArea.this, "지역을 선택해 주세요", Toast.LENGTH_LONG).show();
+                }else{
+                    SearchThread searchThread
+                            = new SearchThread("http://52.79.106.71/search?addr_si_id="+addr_si_id+"&addr_gu_id="+addr_gu_id+"&addr_dong_id="+addr_dong_id
+                            +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
+                            +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
+                            +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
+                    searchThread.start();
+                }
             }
         });
     }
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 
     class SearchThread extends Thread{
         String mAddr;
@@ -339,10 +416,26 @@ public class SearchFilterArea extends Activity {
             intent.putExtra("latitude", latitude);
             intent.putExtra("longitude", longitude);
             intent.putExtra("searchJSON", searchJSON);
+
+            intent.putExtra("estate_type", estate_type);
+            intent.putExtra("deal_type", deal_type);
+            intent.putExtra("price_type", price_type);
+
+            intent.putExtra("price_from", price_from);
+            intent.putExtra("price_to", price_to);
+            intent.putExtra("monthly_from", monthly_from);
+            intent.putExtra("monthly_to", monthly_to);
+            intent.putExtra("extent_from", extent_from);
+            intent.putExtra("extent_to", extent_to);
+
+            intent.putExtra("monthly_annual", monthly_annual);
+
             setResult(RESULT_OK, intent);
             finish();
         }
     }
+
+//////////////////////////////////////////////////////////////////////////////////////////////
 
     // 매물의 주소(시,구,동)를 선택을 위한 네트워크 접속을 위한 스레드
     class AddressThread extends Thread {

@@ -1,4 +1,6 @@
-{{$latitude}}|{{$longitude}}|
+@if(isset($latitude))
+{{$latitude}}`{{$longitude}}`
+@endif
 
 [
 @foreach($results as $result)
