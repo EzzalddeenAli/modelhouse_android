@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -39,6 +40,11 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
     Double longtitude;
     AdapterViewFlipper avf;
     ArrayList<Bitmap> bitmaps;
+
+    TextView title_addr1;
+    TextView user_name;
+    TextView phone;
+    Button phone_call;
 
     final String API_KEY = "c28ce2a178185b5577a869519a3ac74b";
 
@@ -124,7 +130,7 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
                 JSONObject estate = ja.getJSONObject(0);
 
                 // 추후 estate.getString("photo")를 콤마(,)를 기준으로 배열로 쪼개어 반복문을 돌릴 예정
-                ArrayList<String> imageUrls = new ArrayList<String>();
+                final ArrayList<String> imageUrls = new ArrayList<String>();
                 imageUrls.add("http://blogfiles7.naver.net/data44/2009/1/18/198/21_goback2u.jpg");
                 imageUrls.add("http://cfile6.uf.tistory.com/image/213A6A4E588A9304335C66");
                 imageUrls.add("http://blogfiles3.naver.net/data41/2008/11/23/146/jinhae_62_goback2u_goback2u.jpg");
@@ -139,8 +145,25 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
 //                        estate.getString("extent")+ estate.getString("category")+ estate.getString("usearea")+ estate.getString("facility")+
 //                        estate.getString("addr1")+ estate.getString("info"));
 
-                TextView title_addr1 = (TextView)findViewById(R.id.title_addr1);
+                title_addr1 = (TextView)findViewById(R.id.title_addr1);
                 title_addr1.setText(estate.getString("addr1"));
+
+                user_name = (TextView)findViewById(R.id.user_name);
+                user_name.setText(estate.getString("name"));
+
+                phone = (TextView)findViewById(R.id.phone);
+                phone.setText(estate.getString("mobile"));
+
+                phone_call = (Button)findViewById(R.id.phone_call);
+                phone_call.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_DIAL);
+                        intent.setData(Uri.parse("tel:" + phone.getText().toString()));
+                        startActivity(intent);
+                    }
+                });
 
 
             }catch (JSONException e){
