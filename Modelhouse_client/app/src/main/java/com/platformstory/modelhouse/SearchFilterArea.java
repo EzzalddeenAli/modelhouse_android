@@ -154,46 +154,25 @@ public class SearchFilterArea extends Activity {
         si.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                si_list = new String[]{"서울", "인천", "경기"};
-                AlertDialog.Builder dlg = new AlertDialog.Builder(SearchFilterArea.this);
-                dlg.setTitle("도/시 선택");
-                dlg.setItems(si_list, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        addr_si_id = i+1;
-                        gu_list=null;
-                        gu_ids=null;
-                        dong_list=null;
-                        dong_ids=null;
-                        si.setText(si_list[i]);
-                        gu.setText("시/군/구 선택");
-                        dong.setText("읍/면/동 선택");
-                        AddressThread addrThread = new AddressThread("http://52.79.106.71/address?table=addr_gues&value="+addr_si_id, "addr_gues");
-                        addrThread.start();
-                    }
-                });
-                dlg.setPositiveButton("닫기", null);
-                dlg.show();
-            }
-        });
-
-        gu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(gu_list==null){
-                    Toast.makeText(SearchFilterArea.this, "시/도 를 먼저 선택하세요", Toast.LENGTH_LONG).show();
-                }else{
+                if (!Network.isNetworkAvailable(SearchFilterArea.this)) {
+                    Log.i("modelhouse", "현재 네트워크에 연결되어 있지 않습니다.\n네트워크 연결 상태를 확인해 주세요");
+                    Toast.makeText(SearchFilterArea.this, "현재 네트워크에 연결되어 있지 않습니다.\n네트워크 연결 상태를 확인해 주세요", Toast.LENGTH_LONG).show();
+                } else {
+                    si_list = new String[]{"서울", "인천", "경기"};
                     AlertDialog.Builder dlg = new AlertDialog.Builder(SearchFilterArea.this);
-                    dlg.setTitle("시/군/구 선택");
-                    dlg.setItems(gu_list, new DialogInterface.OnClickListener() {
+                    dlg.setTitle("도/시 선택");
+                    dlg.setItems(si_list, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            addr_gu_id = gu_ids[i];
-                            dong_list=null;
-                            dong_ids=null;
-                            gu.setText(gu_list[i]);
+                            addr_si_id = i + 1;
+                            gu_list = null;
+                            gu_ids = null;
+                            dong_list = null;
+                            dong_ids = null;
+                            si.setText(si_list[i]);
+                            gu.setText("시/군/구 선택");
                             dong.setText("읍/면/동 선택");
-                            AddressThread addrThread = new AddressThread("http://52.79.106.71/address?table=addr_dongs&value="+gu_ids[i], "addr_dongs");
+                            AddressThread addrThread = new AddressThread("http://52.79.106.71/address?table=addr_gues&value=" + addr_si_id, "addr_gues");
                             addrThread.start();
                         }
                     });
@@ -203,23 +182,59 @@ public class SearchFilterArea extends Activity {
             }
         });
 
+        gu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!Network.isNetworkAvailable(SearchFilterArea.this)){
+                    Log.i("modelhouse","현재 네트워크에 연결되어 있지 않습니다.\n네트워크 연결 상태를 확인해 주세요");
+                    Toast.makeText(SearchFilterArea.this, "현재 네트워크에 연결되어 있지 않습니다.\n네트워크 연결 상태를 확인해 주세요", Toast.LENGTH_LONG).show();
+                }else {
+                    if (gu_list == null) {
+                        Toast.makeText(SearchFilterArea.this, "시/도 를 먼저 선택하세요", Toast.LENGTH_LONG).show();
+                    } else {
+                        AlertDialog.Builder dlg = new AlertDialog.Builder(SearchFilterArea.this);
+                        dlg.setTitle("시/군/구 선택");
+                        dlg.setItems(gu_list, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                addr_gu_id = gu_ids[i];
+                                dong_list = null;
+                                dong_ids = null;
+                                gu.setText(gu_list[i]);
+                                dong.setText("읍/면/동 선택");
+                                AddressThread addrThread = new AddressThread("http://52.79.106.71/address?table=addr_dongs&value=" + gu_ids[i], "addr_dongs");
+                                addrThread.start();
+                            }
+                        });
+                        dlg.setPositiveButton("닫기", null);
+                        dlg.show();
+                    }
+                }
+            }
+        });
+
         dong.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(dong_list==null){
-                    Toast.makeText(SearchFilterArea.this, "시/군/구 를 먼저 선택하세요", Toast.LENGTH_LONG).show();
-                }else{
-                    AlertDialog.Builder dlg = new AlertDialog.Builder(SearchFilterArea.this);
-                    dlg.setTitle("읍/면/동 선택");
-                    dlg.setItems(dong_list, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            addr_dong_id = dong_ids[i];
-                            dong.setText(dong_list[i]);
-                        }
-                    });
-                    dlg.setPositiveButton("닫기", null);
-                    dlg.show();
+                if(!Network.isNetworkAvailable(SearchFilterArea.this)){
+                    Log.i("modelhouse","현재 네트워크에 연결되어 있지 않습니다.\n네트워크 연결 상태를 확인해 주세요");
+                    Toast.makeText(SearchFilterArea.this, "현재 네트워크에 연결되어 있지 않습니다.\n네트워크 연결 상태를 확인해 주세요", Toast.LENGTH_LONG).show();
+                }else {
+                    if (dong_list == null) {
+                        Toast.makeText(SearchFilterArea.this, "시/군/구 를 먼저 선택하세요", Toast.LENGTH_LONG).show();
+                    } else {
+                        AlertDialog.Builder dlg = new AlertDialog.Builder(SearchFilterArea.this);
+                        dlg.setTitle("읍/면/동 선택");
+                        dlg.setItems(dong_list, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                addr_dong_id = dong_ids[i];
+                                dong.setText(dong_list[i]);
+                            }
+                        });
+                        dlg.setPositiveButton("닫기", null);
+                        dlg.show();
+                    }
                 }
             }
         });
@@ -385,17 +400,22 @@ public class SearchFilterArea extends Activity {
                 if(addr_si_id==0 && addr_gu_id==0 && addr_dong_id==0){
                     Toast.makeText(SearchFilterArea.this, "지역을 선택해 주세요", Toast.LENGTH_LONG).show();
                 }else{
-                    Log.i("modelhouse", "[검색 화면에서 검색] http://52.79.106.71/search?addr_si_id="+addr_si_id+"&addr_gu_id="+addr_gu_id+"&addr_dong_id="+addr_dong_id
-                            +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
-                            +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
-                            +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
+                    if(!Network.isNetworkAvailable(SearchFilterArea.this)){
+                        Log.i("modelhouse","현재 네트워크에 연결되어 있지 않습니다.\n네트워크 연결 상태를 확인해 주세요");
+                        Toast.makeText(SearchFilterArea.this, "현재 네트워크에 연결되어 있지 않습니다.\n네트워크 연결 상태를 확인해 주세요", Toast.LENGTH_LONG).show();
+                    }else{
+                        Log.i("modelhouse", "[검색 화면에서 검색] http://52.79.106.71/search?addr_si_id="+addr_si_id+"&addr_gu_id="+addr_gu_id+"&addr_dong_id="+addr_dong_id
+                                +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
+                                +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
+                                +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
 
-                    SearchThread searchThread
-                            = new SearchThread("http://52.79.106.71/search?addr_si_id="+addr_si_id+"&addr_gu_id="+addr_gu_id+"&addr_dong_id="+addr_dong_id
-                            +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
-                            +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
-                            +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
-                    searchThread.start();
+                        SearchThread searchThread
+                                = new SearchThread("http://52.79.106.71/search?addr_si_id="+addr_si_id+"&addr_gu_id="+addr_gu_id+"&addr_dong_id="+addr_dong_id
+                                +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
+                                +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
+                                +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
+                        searchThread.start();
+                    }
                 }
             }
         });

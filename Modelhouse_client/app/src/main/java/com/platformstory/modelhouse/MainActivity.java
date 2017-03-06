@@ -70,8 +70,6 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mProgress = ProgressDialog.show(MainActivity.this, "Wait", "Downloading...");
-
         view_list = (Button)findViewById(R.id.button);
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
@@ -125,30 +123,30 @@ public class MainActivity extends FragmentActivity {
             }
         });
 
+        if(!Network.isNetworkAvailable(MainActivity.this)){
+            Log.i("modelhouse","현재 네트워크에 연결되어 있지 않습니다.\n네트워크 연결 상태를 확인해 주세요");
+            Toast.makeText(MainActivity.this, "현재 네트워크에 연결되어 있지 않습니다.\n네트워크 연결 상태를 확인해 주세요", Toast.LENGTH_LONG).show();
+        }else {
+            mProgress = ProgressDialog.show(MainActivity.this, "Wait", "Downloading...");
 
-//        Log.i("modelhouse","http://52.79.106.71/estates?latitude="+latitude+"&longtitude="+longitude+"&zoom="+zoom);
-//        Toast.makeText(MainActivity.this, "검색 필터가 적용됩니다.", Toast.LENGTH_LONG).show();
-//        thread = new EstateSearchMapThread("http://52.79.106.71/estates?latitude="+latitude+"&longtitude="+longitude+"&zoom="+zoom);
-//        thread.start();
+            if (!(estate_type == 0 && deal_type == 0 && price_type == 0 && price_from == 0 && price_to == 10000 && monthly_from == 0 && monthly_to == 10000 && extent_from == 0 && extent_to == 10000 && monthly_annual == 0)) {
+                Toast.makeText(MainActivity.this, "검색 필터가 적용됩니다.", Toast.LENGTH_LONG).show();
+                Log.i("modelhouse", "[초기 검색[검색 필터 적용]] http://52.79.106.71/search?latitude=" + latitude + "&longitude=" + longitude
+                        + "&estate_type=" + estate_type + "&deal_type=" + deal_type + "&price_type=" + price_type
+                        + "&price_from=" + price_from + "&price_to=" + price_to + "&monthly_from=" + monthly_from + "&monthly_to=" + monthly_to
+                        + "&extent_from=" + extent_from + "&extent_to=" + extent_to + "&monthly_annual=" + monthly_annual);
 
-        if(!(estate_type==0 && deal_type==0 && price_type==0 && price_from==0 && price_to==10000 && monthly_from==0 && monthly_to==10000 && extent_from==0 && extent_to==10000 && monthly_annual==0)){
-            Toast.makeText(MainActivity.this, "검색 필터가 적용됩니다.", Toast.LENGTH_LONG).show();
-            Log.i("modelhouse", "[초기 검색[검색 필터 적용]] http://52.79.106.71/search?latitude="+latitude+"&longitude="+longitude
-                    +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
-                    +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
-                    +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
-
-            thread = new EstateSearchMapThread("http://52.79.106.71/search?latitude="+latitude+"&longitude="+longitude
-                    +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
-                    +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
-                    +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
-            thread.start();
-        }else{
-            // 지도의 좌표, 줌 값을 토대로 지도 중심 반경 내의 매물을 검색하여 클러스터로 띄움
-
-            Log.i("modelhouse","[초기 검색[검색 필터 미적용]] http://52.79.106.71/estates?latitude="+latitude+"&longtitude="+longitude+"&zoom="+zoom);
-            thread = new EstateSearchMapThread("http://52.79.106.71/estates?latitude="+latitude+"&longtitude="+longitude+"&zoom="+zoom);
-            thread.start();
+                thread = new EstateSearchMapThread("http://52.79.106.71/search?latitude=" + latitude + "&longitude=" + longitude
+                        + "&estate_type=" + estate_type + "&deal_type=" + deal_type + "&price_type=" + price_type
+                        + "&price_from=" + price_from + "&price_to=" + price_to + "&monthly_from=" + monthly_from + "&monthly_to=" + monthly_to
+                        + "&extent_from=" + extent_from + "&extent_to=" + extent_to + "&monthly_annual=" + monthly_annual);
+                thread.start();
+            } else {
+                // 지도의 좌표, 줌 값을 토대로 지도 중심 반경 내의 매물을 검색하여 클러스터로 띄움
+                Log.i("modelhouse", "[초기 검색[검색 필터 미적용]] http://52.79.106.71/estates?latitude=" + latitude + "&longtitude=" + longitude + "&zoom=" + zoom);
+                thread = new EstateSearchMapThread("http://52.79.106.71/estates?latitude=" + latitude + "&longtitude=" + longitude + "&zoom=" + zoom);
+                thread.start();
+            }
         }
 
     }
@@ -373,8 +371,6 @@ public class MainActivity extends FragmentActivity {
 
         editor.commit();
     }
-
-
 }
 
 

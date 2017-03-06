@@ -1,7 +1,10 @@
 package com.platformstory.modelhouse;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.NetworkOnMainThreadException;
 
 import java.io.BufferedReader;
@@ -12,6 +15,20 @@ import java.net.URL;
 
 
 public class Network {
+    public static boolean isNetworkAvailable(Context context){
+        boolean available = false;
+
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo info = manager.getActiveNetworkInfo();
+
+        if(info != null && info.isAvailable()){
+            available = true;
+        }
+
+        return available;
+    }
+
     public static String DownloadHtml(String addr) {
         StringBuilder html = new StringBuilder();
         try {
