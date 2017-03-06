@@ -103,6 +103,58 @@ class SearchController extends Controller
 
     }
 
+    // public function search2($latitude, $longitude, $estate_type, $deal_type, $price_type, $price_from, $price_to, $monthly_from, $monthly_to, $extent_from, $extent_to, $monthly_annual){
+    //     $query = DB::table('estates')->join('estate_categories', 'estates.id', '=', 'estate_categories.estate_id')
+    //                     ->select('estates.id', 'estates.price_type', 'estates.photo', 'estates.monthly_price', 'estates.info', 'estates.annual_price', 'estates.price',
+    //                             'estates.type', 'estates.extent', 'estate_categories.category', 'estate_categories.usearea', 'estates.facility', 
+    //                             'estates.addr1', 'estates.latitude', 'estates.longtitude')                      
+    //                     ->where(DB::raw("6371 * 2 * ATAN2(SQRT(POW(SIN(RADIANS(latitude - $latitude)/2), 2) + POW(SIN(RADIANS(longtitude - $longitude)/2), 2) *
+    //                                                         COS(RADIANS($latitude)) * COS(RADIANS(latitude))), SQRT(1 - POW(SIN(RADIANS(latitude - $latitude)/2), 2) + POW(SIN(RADIANS(longtitude - $longitude)/2), 2)
+    //                                                         * COS(RADIANS($latitude)) * COS(RADIANS(latitude))))"), "<=", 8)
+    //                     ->when($estate_type!=0, function ($query) use ($estate_type) {
+    //                         return $query->where('estates.type', $estate_type);
+    //                     })
+    //                     ->when($deal_type!=0, function ($query) use ($deal_type) {
+    //                         return $query->where('estates.price_type', $deal_type);
+    //                     })
+    //                     ->when($price_type!=0, function ($query) use ($price_type) {
+    //                         return $query->where('estates.price_type', $price_type);
+    //                     })
+    //                     ->when($price_to!=10000, 
+    //                         function ($query) use ($price_from, $price_to) {
+    //                             return $query->whereBetween('estates.price', [$price_from, $price_to]);
+    //                         },
+    //                         function ($query) use ($price_from){
+    //                             return $query->where('estates.price', '>=', $price_from);
+    //                     })
+    //                     ->when($extent_to!=10000, 
+    //                         function ($query) use ($extent_from, $extent_to) {
+    //                             return $query->whereBetween('estates.extent', [$extent_from, $extent_to]);
+    //                         },
+    //                         function ($query) use ($extent_from){
+    //                             return $query->where('estates.extent', '>=', $extent_from);
+    //                     })
+    //                     ->when( ($price_type==3 && $monthly_annual==1 && $monthly_to!=10000), 
+    //                         function ($query) use ($monthly_from, $monthly_to) {
+    //                             return $query->whereBetween('estates.monthly_price', [$monthly_from, $monthly_to]);
+    //                     })   
+    //                     ->when( ($price_type==3 && $monthly_annual==1 && $monthly_to==10000), 
+    //                         function ($query) use ($monthly_from, $monthly_to) {
+    //                             return $query->where('estates.monthly_price', $monthly_from);
+    //                     }) 
+    //                     ->when( ($price_type==3 && $monthly_annual==2 && $monthly_to!=10000), 
+    //                         function ($query) use ($monthly_from, $monthly_to) {
+    //                             return $query->whereBetween('estates.monthly_price', [$monthly_from, $monthly_to]);
+    //                     })   
+    //                     ->when( ($price_type==3 && $monthly_annual==2 && $monthly_to==10000), 
+    //                         function ($query) use ($monthly_from, $monthly_to) {
+    //                             return $query->where('estates.annual_price', $monthly_from);
+    //                     }) 
+    //                     ->get();
+
+    //     return view('search.result')->with('results', $query);
+    // }
+
 
     public function index()
     {

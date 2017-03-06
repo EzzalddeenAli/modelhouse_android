@@ -17,6 +17,7 @@ Route::get('/', function () {
 
 Route::resource('/estates', 'EstateController');
 Route::get('/address', 'AddressController@address');
-Route::get('/search', 'SearchController@search');
+// Route::get('/search2/{latitude}/{longitude}/{estate_type}/{deal_type}/{price_type}/{price_from}/{price_to}/{monthly_from}/{monthly_to}/{extent_from}/{extent_to}/{monthly_annual}', 'SearchController@search2');
+
 
 

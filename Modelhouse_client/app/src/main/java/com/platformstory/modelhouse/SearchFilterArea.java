@@ -181,7 +181,7 @@ public class SearchFilterArea extends Activity {
             @Override
             public void onClick(View view) {
                 if(gu_list==null){
-                    Log.i("modelhouse", "시/도 를 먼저 선택하세요");
+                    Toast.makeText(SearchFilterArea.this, "시/도 를 먼저 선택하세요", Toast.LENGTH_LONG).show();
                 }else{
                     AlertDialog.Builder dlg = new AlertDialog.Builder(SearchFilterArea.this);
                     dlg.setTitle("시/군/구 선택");
@@ -207,7 +207,7 @@ public class SearchFilterArea extends Activity {
             @Override
             public void onClick(View view) {
                 if(dong_list==null){
-                    Log.i("modelhouse", "시/군/구 를 먼저 선택하세요");
+                    Toast.makeText(SearchFilterArea.this, "시/군/구 를 먼저 선택하세요", Toast.LENGTH_LONG).show();
                 }else{
                     AlertDialog.Builder dlg = new AlertDialog.Builder(SearchFilterArea.this);
                     dlg.setTitle("읍/면/동 선택");
@@ -385,6 +385,11 @@ public class SearchFilterArea extends Activity {
                 if(addr_si_id==0 && addr_gu_id==0 && addr_dong_id==0){
                     Toast.makeText(SearchFilterArea.this, "지역을 선택해 주세요", Toast.LENGTH_LONG).show();
                 }else{
+                    Log.i("modelhouse", "[검색 화면에서 검색] http://52.79.106.71/search?addr_si_id="+addr_si_id+"&addr_gu_id="+addr_gu_id+"&addr_dong_id="+addr_dong_id
+                            +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
+                            +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
+                            +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
+
                     SearchThread searchThread
                             = new SearchThread("http://52.79.106.71/search?addr_si_id="+addr_si_id+"&addr_gu_id="+addr_gu_id+"&addr_dong_id="+addr_dong_id
                             +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
