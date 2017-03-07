@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,14 +59,19 @@ public class EstateSearchListActivity  extends Activity {
     AdapterView.OnItemClickListener estateDetail = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent intent = new Intent(EstateSearchListActivity.this, EstateDetailActivity.class);
-            intent.putExtra("estate_id", estates.get(position).id+"");
-            intent.putExtra("latitude", estates.get(position).latitude);
-            intent.putExtra("longtitude", estates.get(position).longtitude);
+            if(!Network.isNetworkAvailable(EstateSearchListActivity.this)){
+                Log.i("modelhouse","현재 네트워크에 연결되어 있지 않습니다.\n네트워크 연결 상태를 확인해 주세요");
+                Toast.makeText(EstateSearchListActivity.this, "현재 네트워크에 연결되어 있지 않습니다.\n네트워크 연결 상태를 확인해 주세요", Toast.LENGTH_LONG).show();
+            }else {
+                Intent intent = new Intent(EstateSearchListActivity.this, EstateDetailActivity.class);
+                intent.putExtra("estate_id", estates.get(position).id + "");
+                intent.putExtra("latitude", estates.get(position).latitude);
+                intent.putExtra("longtitude", estates.get(position).longtitude);
 
-            startActivity(intent);
+                startActivity(intent);
 
-            //Toast.makeText(MainActivity.this, estates.get(position).id+"", Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this, estates.get(position).id+"", Toast.LENGTH_LONG).show();
+            }
         }
     };
 }
