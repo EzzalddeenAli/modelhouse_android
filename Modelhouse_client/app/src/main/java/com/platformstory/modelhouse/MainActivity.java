@@ -23,14 +23,19 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.algo.GridBasedAlgorithm;
 import com.google.maps.android.clustering.algo.PreCachingAlgorithmDecorator;
+import com.google.maps.android.clustering.view.ClusterRenderer;
+import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Set;
 
 
 public class MainActivity extends FragmentActivity {
@@ -292,6 +297,11 @@ public class MainActivity extends FragmentActivity {
                     }
                 };
 
+//                DefaultClusterRenderer<MyItem> dClustererRenderer = new DefaultClusterRenderer<>(MainActivity.this, gMap, mClusterManager);
+//                dClustererRenderer.
+
+                mClusterManager.setRenderer(new CustomRenderer<MyItem>(MainActivity.this, gMap, mClusterManager));
+
                 gMap.setOnCameraChangeListener(mClusterManager);
                 gMap.setOnMarkerClickListener(mClusterManager);
 
@@ -343,6 +353,20 @@ public class MainActivity extends FragmentActivity {
             }
         }catch (JSONException e){
 
+        }
+    }
+
+    // 클러스터를 형성할 최소의 마커 개수를 1로 설정
+    class CustomRenderer<T extends ClusterItem> extends DefaultClusterRenderer<T>
+    {
+        public CustomRenderer(Context context, GoogleMap map, ClusterManager<T> clusterManager) {
+            super(context, map, clusterManager);
+        }
+
+        @Override
+        protected boolean shouldRenderAsCluster(Cluster<T> cluster) {
+            //start clustering if at least 1 items overlap
+            return cluster.getSize() >= 1;
         }
     }
 
