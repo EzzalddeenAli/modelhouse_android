@@ -59,7 +59,7 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
 
         mProgress = ProgressDialog.show(EstateDetailActivity.this, "Wait", "Downloading...");
 
-        EstateDetailThread  thread = new EstateDetailThread("http://52.79.106.71/estates/"+estate_id);
+        EstateDetailThread  thread = new EstateDetailThread("http://52.79.106.71/api/estates/"+estate_id, "GET");
         thread.start();
 
         final TextView like_it = (TextView)findViewById(R.id.like_it);
@@ -85,13 +85,15 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
 
     class EstateDetailThread extends Thread {
         String mAddr;
+        String method;
 
-        EstateDetailThread(String addr) {
+        EstateDetailThread(String addr, String method) {
             mAddr = addr;
+            this.method = method;
         }
 
         public void run() {
-            String Json = Network.DownloadHtml(mAddr);
+            String Json = Network.DownloadHtml(mAddr, method);
 
             Message message = mAfterDown.obtainMessage();
             message.obj = Json;

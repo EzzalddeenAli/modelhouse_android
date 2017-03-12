@@ -172,7 +172,7 @@ public class SearchFilterArea extends Activity {
                             si.setText(si_list[i]);
                             gu.setText("시/군/구 선택");
                             dong.setText("읍/면/동 선택");
-                            AddressThread addrThread = new AddressThread("http://52.79.106.71/address?table=addr_gues&value=" + addr_si_id, "addr_gues");
+                            AddressThread addrThread = new AddressThread("http://52.79.106.71/api/address?table=addr_gues&value=" + addr_si_id, "addr_gues", "POST");
                             addrThread.start();
                         }
                     });
@@ -202,7 +202,7 @@ public class SearchFilterArea extends Activity {
                                 dong_ids = null;
                                 gu.setText(gu_list[i]);
                                 dong.setText("읍/면/동 선택");
-                                AddressThread addrThread = new AddressThread("http://52.79.106.71/address?table=addr_dongs&value=" + gu_ids[i], "addr_dongs");
+                                AddressThread addrThread = new AddressThread("http://52.79.106.71/api/address?table=addr_dongs&value=" + gu_ids[i], "addr_dongs", "POST");
                                 addrThread.start();
                             }
                         });
@@ -404,16 +404,16 @@ public class SearchFilterArea extends Activity {
                         Log.i("modelhouse","현재 네트워크에 연결되어 있지 않습니다.\n네트워크 연결 상태를 확인해 주세요");
                         Toast.makeText(SearchFilterArea.this, "현재 네트워크에 연결되어 있지 않습니다.\n네트워크 연결 상태를 확인해 주세요", Toast.LENGTH_LONG).show();
                     }else{
-                        Log.i("modelhouse", "[검색 화면에서 검색] http://52.79.106.71/search?addr_si_id="+addr_si_id+"&addr_gu_id="+addr_gu_id+"&addr_dong_id="+addr_dong_id
+                        Log.i("modelhouse", "[검색 화면에서 검색] http://52.79.106.71/api/search?addr_si_id="+addr_si_id+"&addr_gu_id="+addr_gu_id+"&addr_dong_id="+addr_dong_id
                                 +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
                                 +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
                                 +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
 
                         SearchThread searchThread
-                                = new SearchThread("http://52.79.106.71/search?addr_si_id="+addr_si_id+"&addr_gu_id="+addr_gu_id+"&addr_dong_id="+addr_dong_id
+                                = new SearchThread("http://52.79.106.71/api/search?addr_si_id="+addr_si_id+"&addr_gu_id="+addr_gu_id+"&addr_dong_id="+addr_dong_id
                                 +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
                                 +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
-                                +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
+                                +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual, "POST");
                         searchThread.start();
                     }
                 }
@@ -425,13 +425,15 @@ public class SearchFilterArea extends Activity {
 
     class SearchThread extends Thread{
         String mAddr;
+        String method;
 
-        SearchThread(String mAddr){
+        SearchThread(String mAddr, String method){
             this.mAddr = mAddr;
+            this.method = method;
         }
 
         public void run(){
-            String[] searchResult = Network.DownloadHtml(mAddr).split("`");
+            String[] searchResult = Network.DownloadHtml(mAddr, method).split("`");
 
             String latitude = searchResult[0];
             String longitude = searchResult[1];
@@ -466,16 +468,18 @@ public class SearchFilterArea extends Activity {
     class AddressThread extends Thread {
         String mAddr;
         String table;
+        String method;
 
-        AddressThread(String mAddr, String table) {
+        AddressThread(String mAddr, String table, String method) {
             this.table = table;
             this.mAddr = mAddr;
+            this.method = method;
         }
 
         public void run() {
             switch(table){
                 case "addr_gues" :
-                    String gues = Network.DownloadHtml(mAddr);
+                    String gues = Network.DownloadHtml(mAddr, method);
 
                     try{
                         JSONArray ja = new JSONArray(gues);
@@ -489,7 +493,7 @@ public class SearchFilterArea extends Activity {
                     }catch(JSONException e){                    }
                     break;
                 case "addr_dongs" :
-                    String dongs = Network.DownloadHtml(mAddr);
+                    String dongs = Network.DownloadHtml(mAddr, method);
 
                     try{
                         JSONArray ja = new JSONArray(dongs);

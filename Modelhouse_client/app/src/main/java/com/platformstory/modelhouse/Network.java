@@ -29,7 +29,7 @@ public class Network {
         return available;
     }
 
-    public static String DownloadHtml(String addr) {
+    public static String DownloadHtml(String addr, String method) {
         StringBuilder html = new StringBuilder();
         try {
             URL url = new URL(addr);
@@ -37,6 +37,7 @@ public class Network {
             if (conn != null) {
                 conn.setConnectTimeout(10000);
                 conn.setUseCaches(false);
+                conn.setRequestMethod(method);
                 if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     BufferedReader br = new BufferedReader(
                             new InputStreamReader(conn.getInputStream()));
