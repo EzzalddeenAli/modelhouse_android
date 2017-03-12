@@ -16,3 +16,16 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::resource('/estates', 'EstateController');
+Route::post('/address', 'AddressController@address');
+Route::resource('/search', 'SearchController');
+
+Route::get('/ex', function(){
+	echo "llll";
+});

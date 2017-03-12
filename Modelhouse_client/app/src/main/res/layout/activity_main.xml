@@ -28,73 +28,212 @@
             android:paddingLeft="40px"
             android:layout_toRightOf="@+id/prev_btn"/>
 
+        <TextView
+            android:id="@+id/menu_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="메뉴"
+            android:layout_alignParentRight="true"
+            android:textColor="#ffffff"
+            android:textSize="50px" />
+
     </RelativeLayout>
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1">
-
-            <fragment
-                android:id="@+id/map"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:name="com.google.android.gms.maps.SupportMapFragment"
-                android:layout_weight="1"/>
-
-            <Button
-                android:id="@+id/search_filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:text="원하는 지역을 검색하세요"/>
-
-        </RelativeLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="5px">
+        <ScrollView
+            android:orientation="vertical"
+            android:id="@+id/slidingPage"
+            android:layout_width="500px"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:background="#ffffff"
+            android:visibility="gone">
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="20px"
-                android:layout_weight="2">
+                android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:textSize="40px"
-                    android:text="검색 결과"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="75px"
+                    android:paddingLeft="22.5px"
+                    android:text="로그인"
+                    android:textSize="30px"
+                    android:textColor="#ffffff"
+                    android:background="#FFA509"
+                    android:gravity="center_vertical"/>
 
-                <TextView
-                    android:id="@+id/result_count"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="75px"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="166px"
+                        android:layout_height="match_parent"
+                        android:text="일반회원 가입하기"
+                        android:textSize="30px"
+                        android:textColor="#000000"
+                        android:background="#ffff00"
+                        android:gravity="center_vertical|center_horizontal"/>
+
+                    <TextView
+                        android:layout_width="166px"
+                        android:layout_height="match_parent"
+                        android:text="중개사무소 가입하기"
+                        android:textSize="30px"
+                        android:textColor="#ffffff"
+                        android:background="#ff00ff"
+                        android:gravity="center_vertical|center_horizontal"/>
+
+                    <TextView
+                        android:layout_width="168px"
+                        android:layout_height="match_parent"
+                        android:text="기업회원 가입하기"
+                        android:textSize="30px"
+                        android:textColor="#ffffff"
+                        android:background="#0000ff"
+                        android:gravity="center_vertical|center_horizontal"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="#aaaaaa">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="100px"
+                        android:paddingLeft="22.5px"
+                        android:text="등록한 매물"
+                        android:textSize="30px"
+                        android:gravity="center_vertical"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="100px"
+                        android:paddingLeft="22.5px"
+                        android:text="최근 본 매물"
+                        android:textSize="30px"
+                        android:gravity="center_vertical"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="100px"
+                        android:paddingLeft="22.5px"
+                        android:text="찜한 매물"
+                        android:textSize="30px"
+                        android:gravity="center_vertical"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="#bbbbbb">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="100px"
+                        android:paddingLeft="22.5px"
+                        android:text="질문하기"
+                        android:textSize="30px"
+                        android:gravity="center_vertical"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="100px"
+                        android:paddingLeft="22.5px"
+                        android:text="매물 요청"
+                        android:textSize="30px"
+                        android:gravity="center_vertical"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="100px"
+                        android:paddingLeft="22.5px"
+                        android:text="매물 등록"
+                        android:textSize="30px"
+                        android:gravity="center_vertical"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/button"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="이 지역 목록 보기"
-                android:layout_weight="1"/>
-        </LinearLayout>
 
-    </LinearLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1">
+
+                <fragment
+                    android:id="@+id/map"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:id="@+id/search_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:text="원하는 지역을 검색하세요"/>
+
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="5px">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="20px"
+                    android:layout_weight="2">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"
+                        android:textSize="40px"
+                        android:text="검색 결과"/>
+
+                    <TextView
+                        android:id="@+id/result_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1"/>
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/button"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="이 지역 목록 보기"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </FrameLayout>
+
+
 
 
 

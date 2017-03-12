@@ -14,7 +14,12 @@ import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,6 +74,13 @@ public class MainActivity extends FragmentActivity {
     TextView result_count;
     Button view_list;
 
+    FrameLayout frameLayout;
+    Boolean isPageOpen = false;
+    TextView menu_btn;
+    Animation translateLeftAnim;
+    Animation translateRightAnim;
+    ScrollView slidingPage;
+
     EstateSearchMapThread thread;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -97,7 +109,6 @@ public class MainActivity extends FragmentActivity {
         extent_to = settings.getInt("extent_to", 10000);
 
         monthly_annual = settings.getInt("monthly_annual", 0);
-
 
         // 지도 객체를 생성하고 지도를 표시한 후 좌표, 줌 값을 토대로 중심을 이동
         gMap = ((SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
@@ -154,6 +165,54 @@ public class MainActivity extends FragmentActivity {
             }
         }
 
+        // 슬라이딩 페이지
+        frameLayout = (FrameLayout) findViewById(R.id.frameLayout);
+        slidingPage = (ScrollView) findViewById(R.id.slidingPage);
+        frameLayout.bringChildToFront(slidingPage);
+
+        translateLeftAnim = AnimationUtils.loadAnimation(this, R.anim.translate_left);
+        translateRightAnim = AnimationUtils.loadAnimation(this, R.anim.translate_right);
+
+        Animation.AnimationListener animListener = new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if(isPageOpen){
+                    slidingPage.setVisibility(View.INVISIBLE);
+                    isPageOpen=false;
+                }else{
+                    isPageOpen=true;
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        };
+
+        translateRightAnim.setAnimationListener(animListener);
+        translateLeftAnim.setAnimationListener(animListener);
+
+        menu_btn = (TextView)findViewById(R.id.menu_btn);
+        menu_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(isPageOpen){
+                    slidingPage.startAnimation(translateRightAnim);
+                    Log.i("modelhouse", "버튼 클릭 2");
+                }else{
+                    slidingPage.setVisibility(View.VISIBLE);
+                    slidingPage.startAnimation(translateLeftAnim);
+                    Log.i("modelhouse", "버튼 클릭 1");
+                }
+            }
+        });
+        // 슬라이딩 페이지(끝)
     }
 
     //인텐트로 결과를 받아오면 위도, 경도를 토대로 지도를 이동하고 클러스터 리스너 등록하는 로직을 여기에 작성

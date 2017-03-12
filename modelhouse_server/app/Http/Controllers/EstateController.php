@@ -10,21 +10,9 @@ use DB;
 
 class EstateController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $latitude = $request->input('latitude');
-        $longtitude = $request->input('longtitude');
-
-        $estates = DB::table('estates')->join('estate_categories', 'estates.id', '=', 'estate_categories.estate_id')
-                ->select('estates.id', 'estates.price_type', 'estates.photo', 'estates.monthly_price', 'estates.info', 'estates.annual_price', 'estates.price',
-                        'estates.type', 'estates.extent', 'estate_categories.category', 'estate_categories.usearea', 'estates.facility', 
-                        'estates.addr1', 'estates.latitude', 'estates.longtitude')
-                ->where(DB::raw("6371 * 2 * ATAN2(SQRT(POW(SIN(RADIANS(latitude - $latitude)/2), 2) + POW(SIN(RADIANS(longtitude - $longtitude)/2), 2) *
-                        COS(RADIANS($latitude)) * COS(RADIANS(latitude))), SQRT(1 - POW(SIN(RADIANS(latitude - $latitude)/2), 2) + POW(SIN(RADIANS(longtitude - $longtitude)/2), 2)
-                        * COS(RADIANS($latitude)) * COS(RADIANS(latitude))))"), "<=", 8)
-                ->get();
-
-        return view('estate.index')->with('estates', $estates);
+        // 
     }
 
     public function create()
@@ -67,7 +55,7 @@ class EstateController extends Controller
 
         $user_detail = user::find($estate_detail->user_id);
 
-        return view('estate.show')->with(['estate_detail'=>$estate_detail, 'user_detail'=>$user_detail]);        
+        return view('estate.show')->with(['estate_detail'=>$estate_detail, 'user_detail'=>$user_detail]);
     }
 
     public function edit($id)
