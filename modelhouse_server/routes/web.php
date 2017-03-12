@@ -16,3 +16,9 @@ Route::get('/', function () {
 });
 
 Route::resource('/estates', 'EstateController');
+Route::get('/address', 'AddressController@address');
+Route::get('/search', 'SearchController@search');
+
+Route::get('/ex', function(){
+	echo "llll";
+});
