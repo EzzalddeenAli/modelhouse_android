@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:rsb="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFA509"
+        android:padding="30px">
+
+        <TextView
+            android:id="@+id/prev_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="←"
+            android:textSize="50px"
+            android:textColor="#ffffff"
+            android:layout_alignParentLeft="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="검색 조건"
+            android:textSize="50px"
+            android:textColor="#ffffff"
+            android:paddingLeft="40px"
+            android:layout_toRightOf="@+id/prev_btn"/>
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="20px"
+                android:paddingRight="20px"
+                android:paddingTop="20px"
+                android:paddingBottom="20px">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="지역 선택"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/si"
+                        android:layout_width="200px"
+                        android:layout_height="wrap_content"
+                        android:padding="10px"
+                        android:layout_margin="5px"
+                        android:background="#b7b7b7"
+                        android:text="도/시 선택"/>
+                    <TextView
+                        android:id="@+id/gu"
+                        android:layout_width="200px"
+                        android:layout_height="wrap_content"
+                        android:padding="10px"
+                        android:layout_margin="5px"
+                        android:background="#b7b7b7"
+                        android:text="시/군/구 선택"/>
+                    <TextView
+                        android:id="@+id/dong"
+                        android:layout_width="200px"
+                        android:layout_height="wrap_content"
+                        android:padding="10px"
+                        android:layout_margin="5px"
+                        android:background="#b7b7b7"
+                        android:text="읍/면/동 선택"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="20px"
+                android:paddingRight="20px"
+                android:paddingTop="20px"
+                android:paddingBottom="20px">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="토지/건물"/>
+
+                <RadioGroup
+                    android:id="@+id/estate_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/land"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="토지"/>
+                    <RadioButton
+                        android:id="@+id/building"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="건물"/>
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="20px"
+                android:paddingRight="20px"
+                android:paddingTop="20px"
+                android:paddingBottom="20px">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="중개사무소/직거래"/>
+                <RadioGroup
+                    android:id="@+id/deal_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/office"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="중개사무소"/>
+                    <RadioButton
+                        android:id="@+id/direct"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="직거래"/>
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="20px"
+                android:paddingRight="20px"
+                android:paddingTop="20px"
+                android:paddingBottom="20px">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="매매/전세/임대"/>
+                <RadioGroup
+                    android:id="@+id/price_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/trade"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="매매"/>
+                    <RadioButton
+                        android:id="@+id/lent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="전세"/>
+                    <RadioButton
+                        android:id="@+id/monthly"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="임대"/>
+                </RadioGroup>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="20px"
+                android:paddingRight="20px"
+                android:paddingTop="20px"
+                android:paddingBottom="20px">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/price_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="가격(매매, 보증금)"
+                        android:layout_alignParentLeft="true"/>
+                    <TextView
+                        android:id="@+id/price_range_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="0~제한없음"/>
+                </RelativeLayout>
+
+                <org.florescu.android.rangeseekbar.RangeSeekBar
+                    android:id="@+id/price_range"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#eeeeee"
+                    android:textColor="#000000"
+                    rsb:valuesAboveThumbs="false"
+                    rsb:absoluteMinValue="0"
+                    rsb:absoluteMaxValue="10000"
+                    rsb:step="10" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/lent_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:paddingLeft="20px"
+                android:paddingRight="20px"
+                android:paddingTop="20px"
+                android:paddingBottom="20px">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="임대료"
+                        android:layout_alignParentLeft="true"/>
+                    <TextView
+                        android:id="@+id/monthly_range_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="0~제한없음"/>
+                </RelativeLayout>
+
+                <org.florescu.android.rangeseekbar.RangeSeekBar
+                    android:id="@+id/monthly_range"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#eeeeee"
+                    android:textColor="#000000"
+                    rsb:valuesAboveThumbs="false"
+                    rsb:absoluteMinValue="0"
+                    rsb:absoluteMaxValue="10000"
+                    rsb:step="10" />
+
+                <RadioGroup
+                    android:id="@+id/monthly_or_annual"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/month"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="월"/>
+                    <RadioButton
+                        android:id="@+id/annual"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="년"/>
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="20px"
+                android:paddingRight="20px"
+                android:paddingTop="20px"
+                android:paddingBottom="20px">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="면적"
+                        android:layout_alignParentLeft="true"/>
+                    <TextView
+                        android:id="@+id/extent_range_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="0~제한없음"/>
+                </RelativeLayout>
+
+                <org.florescu.android.rangeseekbar.RangeSeekBar
+                    android:id="@+id/extent_range"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#eeeeee"
+                    android:textColor="#000000"
+                    rsb:valuesAboveThumbs="false"
+                    rsb:absoluteMinValue="0"
+                    rsb:absoluteMaxValue="10000"
+                    rsb:step="10" />
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:layout_weight="5">
+
+        <Button
+            android:id="@+id/reset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="초기화"/>
+
+        <Button
+            android:id="@+id/submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="확인"/>
+    </LinearLayout>
+
+</LinearLayout>
+
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+    <!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:rsb="http://schemas.android.com/apk/res-auto"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="vertical"-->
+    <!--android:padding="8dp">-->
+
+    <!--<FrameLayout-->
+    <!--android:id="@+id/seekbar_placeholder"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="vertical"/>-->
+
+    <!--<TextView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Range seek bar from xml with default range"/>-->
+
+    <!--<org.florescu.android.rangeseekbar.RangeSeekBar-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"/>-->
+
+    <!--<TextView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Range seek bar from xml with ranges set"/>-->
+
+
+    <!--<org.florescu.android.rangeseekbar.RangeSeekBar-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--rsb:absoluteMaxValue="150"-->
+    <!--rsb:absoluteMinValue="20"/>-->
+
+    <!--<TextView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Range seek bar from xml with ranges and step set"/>-->
+
+
+    <!--<org.florescu.android.rangeseekbar.RangeSeekBar-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--rsb:absoluteMaxValue="150"-->
+    <!--rsb:absoluteMinValue="20"-->
+    <!--rsb:step="10" />-->
+
+    <!--<TextView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Range seek bar from xml with ranges set and double values"/>-->
+
+
+    <!--<org.florescu.android.rangeseekbar.RangeSeekBar-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--rsb:absoluteMaxValue="140.54"-->
+    <!--rsb:absoluteMinValue="15.23"/>-->
+
+    <!--<TextView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Range seek bar from xml with single thumb to true"/>-->
+
+
+    <!--<org.florescu.android.rangeseekbar.RangeSeekBar-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--rsb:absoluteMaxValue="150"-->
+    <!--rsb:absoluteMinValue="20"-->
+    <!--rsb:singleThumb="true"/>-->
+
+    <!--<TextView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Range seek bar from xml with custom color to text above thumbs "/>-->
+
+    <!--<org.florescu.android.rangeseekbar.RangeSeekBar-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--rsb:absoluteMaxValue="150"-->
+    <!--rsb:absoluteMinValue="20"-->
+    <!--rsb:singleThumb="true"-->
+    <!--rsb:textAboveThumbsColor="@android:color/holo_green_light"/>-->
+
+    <!--<TextView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Range seek bar from code with custom color to text above thumbs "/>-->
+
+    <!--<org.florescu.android.rangeseekbar.RangeSeekBar-->
+    <!--android:id="@+id/rangeSeekBarTextColorWithCode"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--rsb:absoluteMaxValue="150"-->
+    <!--rsb:absoluteMinValue="20"-->
+    <!--rsb:singleThumb="true"/>-->
+
+    <!--<TextView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="Range seek bar from xml with custom thumb handle"/>-->
+
+
+    <!--<org.florescu.android.rangeseekbar.RangeSeekBar-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--rsb:absoluteMaxValue="150"-->
+    <!--rsb:absoluteMinValue="20"-->
+    <!--rsb:thumbDisabled="@mipmap/ic_launcher"-->
+    <!--rsb:thumbNormal="@mipmap/ic_launcher"-->
+    <!--rsb:thumbPressed="@mipmap/ic_launcher"/>-->
+
+    <!--<TextView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:paddingBottom="4dp"-->
+    <!--android:paddingTop="8dp"-->
+    <!--android:text="Range seek bar from xml with no text above"/>-->
+
+
+    <!--<org.florescu.android.rangeseekbar.RangeSeekBar-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--rsb:absoluteMaxValue="150"-->
+    <!--rsb:absoluteMinValue="20"-->
+    <!--rsb:valuesAboveThumbs="false"/>-->
+
+
+
+
+
+    <!--</LinearLayout>-->
+
+    <!--</ScrollView>-->

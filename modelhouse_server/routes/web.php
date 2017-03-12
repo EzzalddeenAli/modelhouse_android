@@ -11,14 +11,14 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-Route::resource('/estates', 'EstateController');
-Route::get('/address', 'AddressController@address');
-Route::get('/search', 'SearchController@search');
+// Route::resource('/estates', 'EstateController');
+// Route::get('/address', 'AddressController@address');
+// Route::get('/search', 'SearchController@search');
 
-Route::get('/ex', function(){
-	echo "llll";
-});
+// Route::get('/ex', function(){
+// 	echo "llll";
+// });

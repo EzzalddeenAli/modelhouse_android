@@ -11,7 +11,40 @@ use DB;
 
 class SearchController extends Controller
 {
-    public function search(Request $request)
+    public function index(Request $request)
+    {
+        $latitude = $request->input('latitude');
+        $longtitude = $request->input('longtitude');
+
+        $estates = DB::table('estates')->join('estate_categories', 'estates.id', '=', 'estate_categories.estate_id')
+                ->select('estates.id', 'estates.price_type', 'estates.photo', 'estates.monthly_price', 'estates.info', 'estates.annual_price', 'estates.price',
+                        'estates.type', 'estates.extent', 'estate_categories.category', 'estate_categories.usearea', 'estates.facility', 
+                        'estates.addr1', 'estates.latitude', 'estates.longtitude')
+                ->where(DB::raw("6371 * 2 * ATAN2(SQRT(POW(SIN(RADIANS(latitude - $latitude)/2), 2) + POW(SIN(RADIANS(longtitude - $longtitude)/2), 2) *
+                        COS(RADIANS($latitude)) * COS(RADIANS(latitude))), SQRT(1 - POW(SIN(RADIANS(latitude - $latitude)/2), 2) + POW(SIN(RADIANS(longtitude - $longtitude)/2), 2)
+                        * COS(RADIANS($latitude)) * COS(RADIANS(latitude))))"), "<=", 8)
+                ->get();
+
+        return view('estate.index')->with('estates', $estates);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
     {
         $addr_si_id = $request->input('addr_si_id');
         $addr_gu_id = $request->input('addr_gu_id');
@@ -99,36 +132,9 @@ class SearchController extends Controller
         }else{
             return view('search.result')->with(['latitude'=>$latitude, 'longitude'=>$longitude, 'results'=>$query]);
         }
+    
 }
-
-
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
+/**
      * Display the specified resource.
      *
      * @param  int  $id
