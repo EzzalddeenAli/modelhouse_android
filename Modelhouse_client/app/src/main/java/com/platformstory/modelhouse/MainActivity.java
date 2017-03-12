@@ -81,6 +81,8 @@ public class MainActivity extends FragmentActivity {
     Animation translateRightAnim;
     ScrollView slidingPage;
 
+    TextView estate_store;
+
     EstateSearchMapThread thread;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -212,6 +214,17 @@ public class MainActivity extends FragmentActivity {
                 }
             }
         });
+
+        // 슬라이딩 페이지 메뉴 버튼 리스너 등록
+        estate_store = (TextView)findViewById(R.id.estate_store);
+        estate_store.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, EstateStoreActivity.class);
+                startActivity(intent);
+            }
+        });
+
         // 슬라이딩 페이지(끝)
     }
 

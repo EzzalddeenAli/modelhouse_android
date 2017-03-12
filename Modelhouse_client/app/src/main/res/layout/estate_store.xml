@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFA509"
+        android:padding="30px">
+
+        <TextView
+            android:id="@+id/prev_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="←"
+            android:textSize="50px"
+            android:textColor="#ffffff"
+            android:layout_alignParentLeft="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="매물 등록"
+            android:textSize="50px"
+            android:textColor="#ffffff"
+            android:paddingLeft="40px"
+            android:layout_toRightOf="@+id/prev_btn"/>
+
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="40px"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="40px">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="위치 정보"
+                    android:textSize="40px"
+                    android:textColor="#a9311b"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/si"
+                        android:layout_width="200px"
+                        android:layout_height="wrap_content"
+                        android:padding="10px"
+                        android:layout_margin="5px"
+                        android:background="#b7b7b7"
+                        android:text="도/시 선택"/>
+                    <TextView
+                        android:id="@+id/gu"
+                        android:layout_width="200px"
+                        android:layout_height="wrap_content"
+                        android:padding="10px"
+                        android:layout_margin="5px"
+                        android:background="#b7b7b7"
+                        android:text="시/군/구 선택"/>
+                    <TextView
+                        android:id="@+id/dong"
+                        android:layout_width="200px"
+                        android:layout_height="wrap_content"
+                        android:padding="10px"
+                        android:layout_margin="5px"
+                        android:background="#b7b7b7"
+                        android:text="읍/면/동 선택"/>
+                </LinearLayout>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="65px"
+                    android:hint="상세주소 입력"
+                    android:background="@drawable/border"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="위치 확인"
+                    android:layout_gravity="center_horizontal"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="40px">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="사진 추가"
+                    android:textSize="40px"
+                    android:textColor="#a9311b"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+
+                    <Button
+                        android:id="@+id/photo_1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="등록"
+                        android:layout_weight="1"/>
+                    <Button
+                        android:id="@+id/photo_2"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="등록"
+                        android:layout_weight="1"/>
+                    <Button
+                        android:id="@+id/photo_3"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="등록"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+
+                    <Button
+                        android:id="@+id/photo_4"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="등록"
+                        android:layout_weight="1"/>
+                    <Button
+                        android:id="@+id/photo_5"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="등록"
+                        android:layout_weight="1"/>
+                    <Button
+                        android:id="@+id/photo_6"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="등록"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+
+                    <Button
+                        android:id="@+id/photo_7"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="등록"
+                        android:layout_weight="1"/>
+                    <Button
+                        android:id="@+id/photo_8"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="등록"
+                        android:layout_weight="1"/>
+                    <Button
+                        android:id="@+id/photo_9"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="등록"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+
+                    <Button
+                        android:id="@+id/photo_10"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="등록"
+                        android:layout_weight="1"/>
+                    <Button
+                        android:id="@+id/photo_11"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="등록"
+                        android:layout_weight="1"/>
+                    <Button
+                        android:id="@+id/photo_12"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="등록"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+
+                    <Button
+                        android:id="@+id/photo_13"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="등록"
+                        android:layout_weight="1"/>
+                    <Button
+                        android:id="@+id/photo_14"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="등록"
+                        android:layout_weight="1"/>
+                    <Button
+                        android:id="@+id/photo_15"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="등록"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="40px">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="판매 정보"
+                        android:textSize="40px"
+                        android:textColor="#a9311b"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="매물 유형"/>
+
+                        <RadioGroup
+                            android:id="@+id/estate_type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/land"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="토지"/>
+                            <RadioButton
+                                android:id="@+id/building"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="건물"/>
+                        </RadioGroup>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="거래유형"/>
+                        <RadioGroup
+                            android:id="@+id/price_type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <RadioButton
+                                android:id="@+id/trade"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="매매"/>
+                            <RadioButton
+                                android:id="@+id/lent"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="전세"/>
+                            <RadioButton
+                                android:id="@+id/monthly"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="임대"/>
+                        </RadioGroup>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="매매가"/>
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="@drawable/border"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="임대료"/>
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="@drawable/border"/>
+
+                    </LinearLayout>
+
+                    <RadioGroup
+                        android:id="@+id/monthly_or_annual"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/month"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="월"/>
+                        <RadioButton
+                            android:id="@+id/annual"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="년"/>
+                    </RadioGroup>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="40px">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="상세 정보"
+                        android:textSize="40px"
+                        android:textColor="#a9311b"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+
+       </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

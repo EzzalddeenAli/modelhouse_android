@@ -152,6 +152,7 @@
                         android:textSize="30px"
                         android:gravity="center_vertical"/>
                     <TextView
+                        android:id="@+id/estate_store"
                         android:layout_width="match_parent"
                         android:layout_height="100px"
                         android:paddingLeft="22.5px"

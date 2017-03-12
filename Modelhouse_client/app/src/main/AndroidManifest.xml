@@ -30,6 +30,8 @@
         <activity android:name=".EstateDetailActivity" android:label="EstateDetailActivity"/>
         <activity android:name=".SearchFilterArea" android:label="SearchFilterArea"/>
 
+        <activity android:name=".EstateStoreActivity" android:label="EstateStoreActivity"/>
+
         <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyCdZXKXnQXA076SF6_YUIbHpL0gejk37rQ"/>
     </application>
 
