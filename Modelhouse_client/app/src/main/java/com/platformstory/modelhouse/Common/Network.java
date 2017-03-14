@@ -1,4 +1,4 @@
-package com.platformstory.modelhouse;
+package com.platformstory.modelhouse.Common;
 
 import android.content.Context;
 import android.graphics.Bitmap;

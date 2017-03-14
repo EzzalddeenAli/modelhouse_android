@@ -1,4 +1,4 @@
-package com.platformstory.modelhouse;
+package com.platformstory.modelhouse.Estate;
 
 
 import android.app.Activity;
@@ -11,8 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
-import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +20,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+import com.platformstory.modelhouse.Common.Network;
+import com.platformstory.modelhouse.R;
 
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
@@ -40,6 +42,7 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
     Double longtitude;
     AdapterViewFlipper avf;
     ArrayList<Bitmap> bitmaps;
+    ArrayList<String> imageUrls;
 
     TextView title_addr1;
     TextView user_name;
@@ -132,15 +135,41 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
                 JSONObject estate = ja.getJSONObject(0);
 
                 // 추후 estate.getString("photo")를 콤마(,)를 기준으로 배열로 쪼개어 반복문을 돌릴 예정
-                final ArrayList<String> imageUrls = new ArrayList<String>();
-                imageUrls.add("http://blogfiles7.naver.net/data44/2009/1/18/198/21_goback2u.jpg");
-                imageUrls.add("http://cfile6.uf.tistory.com/image/213A6A4E588A9304335C66");
-                imageUrls.add("http://blogfiles3.naver.net/data41/2008/11/23/146/jinhae_62_goback2u_goback2u.jpg");
-                imageUrls.add("http://blogfiles9.naver.net/data41/2009/1/18/24/08_goback2u.jpg");
+                imageUrls = new ArrayList<String>();
 
+                String[] photos = estate.getString("photo").split(",");
+                for(int i=0; i<photos.length; i++){
+                    imageUrls.add(photos[i]);
+                }
 
-                DownImageThread thread1 = new DownImageThread(imageUrls);
-                thread1.start();
+//                bitmaps = (ArrayList<Bitmap>)msg.obj;
+
+                avf = (AdapterViewFlipper) findViewById(R.id.detailed_photo);
+                avf.setAdapter(new galleryAdapter(EstateDetailActivity.this));
+                avf.startFlipping();
+
+                ((Button)findViewById(R.id.showPrev)).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        avf.showPrevious();
+                    }
+                });
+
+                ((Button)findViewById(R.id.showNext)).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        avf.showNext();
+                    }
+                });
+
+//                imageUrls.add("http://blogfiles7.naver.net/data44/2009/1/18/198/21_goback2u.jpg");
+//                imageUrls.add("http://cfile6.uf.tistory.com/image/213A6A4E588A9304335C66");
+//                imageUrls.add("http://blogfiles3.naver.net/data41/2008/11/23/146/jinhae_62_goback2u_goback2u.jpg");
+//                imageUrls.add("http://blogfiles9.naver.net/data41/2009/1/18/24/08_goback2u.jpg");
+//
+//
+//                DownImageThread thread1 = new DownImageThread(imageUrls);
+//                thread1.start();
 
 //                Log.i("modelhouse", estate.getInt("id")+ estate.getString("type")+estate.getString("photo")+ estate.getString("price_type")+
 //                        estate.getString("price")+
@@ -290,7 +319,7 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
 
         @Override
         public int getCount() {
-            return bitmaps.size();
+            return imageUrls.size();
         }
 
         @Override
@@ -309,7 +338,10 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
                 convertView = inflater.inflate(R.layout.estate_detail_photo, parent, false);
             }
             ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
-            imageView.setImageBitmap(bitmaps.get(position));
+//            imageView.setImageBitmap(bitmaps.get(position));
+            Glide.with(mContext).load("http://tourplatform.net:2500/storage/files/"+imageUrls.get(position)).into(imageView);
+
+//            출처: http://ogoons.com/119 [오군의 기술 블로그]
 
             return convertView;
         }

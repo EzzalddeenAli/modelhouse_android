@@ -114,24 +114,64 @@
                     android:orientation="horizontal"
                     >
 
-                    <Button
-                        android:id="@+id/photo_1"
+                    <RelativeLayout
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="등록"
-                        android:layout_weight="1"/>
-                    <Button
-                        android:id="@+id/photo_2"
+                        android:layout_height="200px"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/btn_photo_1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="등록"
+                            android:layout_weight="1"/>
+                        <ImageView
+                            android:id="@+id/img_photo_1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="등록"
-                        android:layout_weight="1"/>
-                    <Button
-                        android:id="@+id/photo_3"
+                        android:layout_height="200px"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/btn_photo_2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="등록"
+                            android:layout_weight="1"/>
+                        <ImageView
+                            android:id="@+id/img_photo_2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </RelativeLayout>
+                    <RelativeLayout
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="등록"
-                        android:layout_weight="1"/>
+                        android:layout_height="200px"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/btn_photo_3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="등록"
+                            android:layout_weight="1"/>
+                        <ImageView
+                            android:id="@+id/img_photo_3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -140,24 +180,64 @@
                     android:orientation="horizontal"
                     >
 
-                    <Button
-                        android:id="@+id/photo_4"
+                    <RelativeLayout
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="등록"
-                        android:layout_weight="1"/>
-                    <Button
-                        android:id="@+id/photo_5"
+                        android:layout_height="200px"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/btn_photo_4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="등록"
+                            android:layout_weight="1"/>
+                        <ImageView
+                            android:id="@+id/img_photo_4"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="등록"
-                        android:layout_weight="1"/>
-                    <Button
-                        android:id="@+id/photo_6"
+                        android:layout_height="200px"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/btn_photo_5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="등록"
+                            android:layout_weight="1"/>
+                        <ImageView
+                            android:id="@+id/img_photo_5"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </RelativeLayout>
+                    <RelativeLayout
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="등록"
-                        android:layout_weight="1"/>
+                        android:layout_height="200px"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/btn_photo_6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="등록"
+                            android:layout_weight="1"/>
+                        <ImageView
+                            android:id="@+id/img_photo_6"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -166,24 +246,64 @@
                     android:orientation="horizontal"
                     >
 
-                    <Button
-                        android:id="@+id/photo_7"
+                    <RelativeLayout
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="등록"
-                        android:layout_weight="1"/>
-                    <Button
-                        android:id="@+id/photo_8"
+                        android:layout_height="200px"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/btn_photo_7"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="등록"
+                            android:layout_weight="1"/>
+                        <ImageView
+                            android:id="@+id/img_photo_7"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="등록"
-                        android:layout_weight="1"/>
-                    <Button
-                        android:id="@+id/photo_9"
+                        android:layout_height="200px"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/btn_photo_8"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="등록"
+                            android:layout_weight="1"/>
+                        <ImageView
+                            android:id="@+id/img_photo_8"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </RelativeLayout>
+                    <RelativeLayout
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="등록"
-                        android:layout_weight="1"/>
+                        android:layout_height="200px"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/btn_photo_9"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="등록"
+                            android:layout_weight="1"/>
+                        <ImageView
+                            android:id="@+id/img_photo_9"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -192,24 +312,64 @@
                     android:orientation="horizontal"
                     >
 
-                    <Button
-                        android:id="@+id/photo_10"
+                    <RelativeLayout
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="등록"
-                        android:layout_weight="1"/>
-                    <Button
-                        android:id="@+id/photo_11"
+                        android:layout_height="200px"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/btn_photo_10"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="등록"
+                            android:layout_weight="1"/>
+                        <ImageView
+                            android:id="@+id/img_photo_10"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="등록"
-                        android:layout_weight="1"/>
-                    <Button
-                        android:id="@+id/photo_12"
+                        android:layout_height="200px"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/btn_photo_11"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="등록"
+                            android:layout_weight="1"/>
+                        <ImageView
+                            android:id="@+id/img_photo_11"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </RelativeLayout>
+                    <RelativeLayout
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="등록"
-                        android:layout_weight="1"/>
+                        android:layout_height="200px"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/btn_photo_12"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="등록"
+                            android:layout_weight="1"/>
+                        <ImageView
+                            android:id="@+id/img_photo_12"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -218,24 +378,64 @@
                     android:orientation="horizontal"
                     >
 
-                    <Button
-                        android:id="@+id/photo_13"
+                    <RelativeLayout
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="등록"
-                        android:layout_weight="1"/>
-                    <Button
-                        android:id="@+id/photo_14"
+                        android:layout_height="200px"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/btn_photo_13"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="등록"
+                            android:layout_weight="1"/>
+                        <ImageView
+                            android:id="@+id/img_photo_13"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="등록"
-                        android:layout_weight="1"/>
-                    <Button
-                        android:id="@+id/photo_15"
+                        android:layout_height="200px"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/btn_photo_14"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="등록"
+                            android:layout_weight="1"/>
+                        <ImageView
+                            android:id="@+id/img_photo_14"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </RelativeLayout>
+                    <RelativeLayout
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="등록"
-                        android:layout_weight="1"/>
+                        android:layout_height="200px"
+                        android:layout_weight="1">
+
+                        <Button
+                            android:id="@+id/btn_photo_15"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="등록"
+                            android:layout_weight="1"/>
+                        <ImageView
+                            android:id="@+id/img_photo_15"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                    </RelativeLayout>
                 </LinearLayout>
             </LinearLayout>
 

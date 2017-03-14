@@ -1,24 +1,20 @@
-package com.platformstory.modelhouse;
+package com.platformstory.modelhouse.Search;
 
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.maps.android.clustering.ClusterManager;
+import com.platformstory.modelhouse.Common.Network;
+import com.platformstory.modelhouse.R;
 
 import org.florescu.android.rangeseekbar.RangeSeekBar;
 import org.json.JSONArray;

@@ -1,10 +1,7 @@
-package com.platformstory.modelhouse;
+package com.platformstory.modelhouse.Search;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -14,10 +11,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.InputStream;
-import java.net.URL;
+import com.bumptech.glide.Glide;
+import com.platformstory.modelhouse.Common.Network;
+import com.platformstory.modelhouse.R;
+
 import java.util.ArrayList;
 
 /**
@@ -56,9 +54,11 @@ public class EstateList extends BaseAdapter{
         }
         img = (ImageView)convertView.findViewById(R.id.estate_photo);
 
+        Glide.with(maincon).load("http://tourplatform.net:2500/storage/files/"+estates.get(position).photo).into(img);
+
 
 //        (new DownImageThread("http://tourplatform.net:2500/storage/files/"+estates.get(position).photo)).start();
-        (new DownImageThread("http://postfiles14.naver.net/20091021_93/studiopj_1256099112708tbtqU_jpg/45625_studiopj.jpg")).start();
+//        (new DownImageThread("http://postfiles14.naver.net/20091021_93/studiopj_1256099112708tbtqU_jpg/45625_studiopj.jpg")).start();
 
         //Log.i("modelhouse", "http://tourplatform.net:2500/storage/files/"+estates.get(position).photo);
 
@@ -79,32 +79,35 @@ public class EstateList extends BaseAdapter{
         return convertView;
     }
 
-    class DownImageThread extends Thread{
-        String mAddr;
-
-        DownImageThread(String addr) {
-            mAddr = addr;
-        }
-
-        public void run() {
-            Bitmap bit = Network.DownloadImage(mAddr);
-
-            Message message = mAfterDown.obtainMessage();
-            message.obj = bit;
-            mAfterDown.sendMessage(message);
-        }
-    }
-
-    Handler mAfterDown = new Handler() {
-        public void handleMessage(Message msg) {
-            Bitmap bit = (Bitmap)msg.obj;
-            if (bit == null) {
-                Log.i("modelhouse", "그림을 불러올 수 없음");
-            } else {
-                img.setImageBitmap(bit);
-            }
-        }
-    };
+//    class DownImageThread extends Thread{
+//        String mAddr;
+//
+//        DownImageThread(String addr) {
+//            mAddr = addr;
+//        }
+//
+//        public void run() {
+//            Bitmap bit = Network.DownloadImage(mAddr);
+//
+//            Message message = mAfterDown.obtainMessage();
+//            message.obj = bit;
+//            mAfterDown.sendMessage(message);
+//        }
+//    }
+//
+//    Handler mAfterDown = new Handler() {
+//        public void handleMessage(Message msg) {
+//            Bitmap bit = (Bitmap)msg.obj;
+//            if (bit == null) {
+//                Log.i("modelhouse", "그림을 불러올 수 없음");
+//            } else {
+//                Glide.with(maincon).load(bit).into(img);
+//
+//
+////                img.setImageBitmap(bit);
+//            }
+//        }
+//    };
 }
 
 class Estate{

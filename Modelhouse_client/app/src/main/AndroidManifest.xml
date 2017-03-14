@@ -26,11 +26,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EstateSearchListActivity" android:label="EstateSearchListActivity"/>
-        <activity android:name=".EstateDetailActivity" android:label="EstateDetailActivity"/>
-        <activity android:name=".SearchFilterArea" android:label="SearchFilterArea"/>
+        <activity android:name=".Search.EstateSearchListActivity" android:label="EstateSearchListActivity"/>
+        <activity android:name=".Estate.EstateDetailActivity" android:label="EstateDetailActivity"/>
+        <activity android:name=".Search.SearchFilterArea" android:label="SearchFilterArea"/>
 
-        <activity android:name=".EstateStoreActivity" android:label="EstateStoreActivity"/>
+        <activity android:name=".Estate.EstateStoreActivity" android:label="EstateStoreActivity"/>
 
         <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyCdZXKXnQXA076SF6_YUIbHpL0gejk37rQ"/>
     </application>

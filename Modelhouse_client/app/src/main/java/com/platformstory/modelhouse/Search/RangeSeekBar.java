@@ -1,4 +1,4 @@
-package com.platformstory.modelhouse;
+package com.platformstory.modelhouse.Search;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -21,6 +21,8 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.widget.ImageView;
+
+import com.platformstory.modelhouse.R;
 
 import org.florescu.android.util.BitmapUtil;
 import org.florescu.android.util.PixelUtil;
