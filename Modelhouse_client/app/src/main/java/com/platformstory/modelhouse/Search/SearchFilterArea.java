@@ -168,7 +168,7 @@ public class SearchFilterArea extends Activity {
                             si.setText(si_list[i]);
                             gu.setText("시/군/구 선택");
                             dong.setText("읍/면/동 선택");
-                            AddressThread addrThread = new AddressThread("http://52.79.106.71/api/address?table=addr_gues&value=" + addr_si_id, "addr_gues", "POST");
+                            AddressThread addrThread = new AddressThread(Network.URL + "address?table=addr_gues&value=" + addr_si_id, "addr_gues", "POST");
                             addrThread.start();
                         }
                     });
@@ -198,7 +198,7 @@ public class SearchFilterArea extends Activity {
                                 dong_ids = null;
                                 gu.setText(gu_list[i]);
                                 dong.setText("읍/면/동 선택");
-                                AddressThread addrThread = new AddressThread("http://52.79.106.71/api/address?table=addr_dongs&value=" + gu_ids[i], "addr_dongs", "POST");
+                                AddressThread addrThread = new AddressThread(Network.URL + "address?table=addr_dongs&value=" + gu_ids[i], "addr_dongs", "POST");
                                 addrThread.start();
                             }
                         });
@@ -406,7 +406,7 @@ public class SearchFilterArea extends Activity {
                                 +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
 
                         SearchThread searchThread
-                                = new SearchThread("http://52.79.106.71/api/search?addr_si_id="+addr_si_id+"&addr_gu_id="+addr_gu_id+"&addr_dong_id="+addr_dong_id
+                                = new SearchThread(Network.URL + "search?addr_si_id="+addr_si_id+"&addr_gu_id="+addr_gu_id+"&addr_dong_id="+addr_dong_id
                                 +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
                                 +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
                                 +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual, "POST");

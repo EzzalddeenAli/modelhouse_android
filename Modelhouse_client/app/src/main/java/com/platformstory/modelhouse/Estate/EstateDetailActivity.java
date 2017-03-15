@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.platformstory.modelhouse.Common.Network;
+import com.platformstory.modelhouse.Common.UtilLibs;
 import com.platformstory.modelhouse.R;
 
 import net.daum.mf.map.api.MapPOIItem;
@@ -49,8 +50,6 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
     TextView phone;
     Button phone_call;
 
-    final String API_KEY = "c28ce2a178185b5577a869519a3ac74b";
-
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.estate_detail);
@@ -62,7 +61,7 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
 
         mProgress = ProgressDialog.show(EstateDetailActivity.this, "Wait", "Downloading...");
 
-        EstateDetailThread  thread = new EstateDetailThread("http://52.79.106.71/api/estates/"+estate_id, "GET");
+        EstateDetailThread  thread = new EstateDetailThread(Network.URL + "estates/"+estate_id, "GET");
         thread.start();
 
         final TextView like_it = (TextView)findViewById(R.id.like_it);
@@ -78,7 +77,7 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
         });
 
         MapView mapView = new MapView(EstateDetailActivity.this);
-        mapView.setDaumMapApiKey(API_KEY);
+        mapView.setDaumMapApiKey(UtilLibs.DAUM_API_KEY);
         mapView.setMapViewEventListener(EstateDetailActivity.this);
         mapView.setPOIItemEventListener(EstateDetailActivity.this);
 
@@ -104,26 +103,26 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
         }
     }
 
-    class DownImageThread extends Thread{
-        ArrayList<String> imageUrls;
-
-        DownImageThread(ArrayList<String> imageUrls) {
-            this.imageUrls = imageUrls;
-        }
-
-        public void run() {
-            bitmaps = new ArrayList<Bitmap>();
-
-            for(int i=0; i<imageUrls.size(); i++){
-                Bitmap bit = Network.DownloadImage(imageUrls.get(i));
-                bitmaps.add(bit);
-            }
-
-            Message message = mAfterDownImage.obtainMessage();
-            message.obj = bitmaps;
-            mAfterDownImage.sendMessage(message);
-        }
-    }
+//    class DownImageThread extends Thread{
+//        ArrayList<String> imageUrls;
+//
+//        DownImageThread(ArrayList<String> imageUrls) {
+//            this.imageUrls = imageUrls;
+//        }
+//
+//        public void run() {
+//            bitmaps = new ArrayList<Bitmap>();
+//
+//            for(int i=0; i<imageUrls.size(); i++){
+//                Bitmap bit = Network.DownloadImage(imageUrls.get(i));
+//                bitmaps.add(bit);
+//            }
+//
+//            Message message = mAfterDownImage.obtainMessage();
+//            message.obj = bitmaps;
+//            mAfterDownImage.sendMessage(message);
+//        }
+//    }
 
     Handler mAfterDown = new Handler() {
         public void handleMessage(Message msg) {
@@ -166,8 +165,7 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
 //                imageUrls.add("http://cfile6.uf.tistory.com/image/213A6A4E588A9304335C66");
 //                imageUrls.add("http://blogfiles3.naver.net/data41/2008/11/23/146/jinhae_62_goback2u_goback2u.jpg");
 //                imageUrls.add("http://blogfiles9.naver.net/data41/2009/1/18/24/08_goback2u.jpg");
-//
-//
+
 //                DownImageThread thread1 = new DownImageThread(imageUrls);
 //                thread1.start();
 
@@ -207,29 +205,29 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
 
     };
 
-    Handler mAfterDownImage = new Handler(){
-        public void handleMessage(Message msg){
-            bitmaps = (ArrayList<Bitmap>)msg.obj;
-
-            avf = (AdapterViewFlipper) findViewById(R.id.detailed_photo);
-            avf.setAdapter(new galleryAdapter(EstateDetailActivity.this));
-            avf.startFlipping();
-
-            ((Button)findViewById(R.id.showPrev)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    avf.showPrevious();
-                }
-            });
-
-            ((Button)findViewById(R.id.showNext)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    avf.showNext();
-                }
-            });
-        }
-    };
+//    Handler mAfterDownImage = new Handler(){
+//        public void handleMessage(Message msg){
+//            bitmaps = (ArrayList<Bitmap>)msg.obj;
+//
+//            avf = (AdapterViewFlipper) findViewById(R.id.detailed_photo);
+//            avf.setAdapter(new galleryAdapter(EstateDetailActivity.this));
+//            avf.startFlipping();
+//
+//            ((Button)findViewById(R.id.showPrev)).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    avf.showPrevious();
+//                }
+//            });
+//
+//            ((Button)findViewById(R.id.showNext)).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    avf.showNext();
+//                }
+//            });
+//        }
+//    };
 
     @Override
     public void onMapViewInitialized(MapView mapView) {

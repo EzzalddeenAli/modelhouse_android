@@ -15,6 +15,8 @@ import java.net.URL;
 
 
 public class Network {
+    public static final String URL = "http://52.79.106.71/api/";
+
     public static boolean isNetworkAvailable(Context context){
         boolean available = false;
 

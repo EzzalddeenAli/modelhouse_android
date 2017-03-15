@@ -25,6 +25,8 @@ Route::get('/', function () {
 Route::resource('/estates', 'EstateController');
 Route::post('/address', 'AddressController@address');
 Route::resource('/search', 'SearchController');
+Route::resource('/upload', 'UploadController');
+
 
 Route::get('/ex', function(){
 	echo "llll";

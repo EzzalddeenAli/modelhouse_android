@@ -148,7 +148,7 @@ public class MainActivity extends FragmentActivity {
                         + "&price_from=" + price_from + "&price_to=" + price_to + "&monthly_from=" + monthly_from + "&monthly_to=" + monthly_to
                         + "&extent_from=" + extent_from + "&extent_to=" + extent_to + "&monthly_annual=" + monthly_annual);
 
-                thread = new EstateSearchMapThread("http://52.79.106.71/api/search?latitude=" + latitude + "&longitude=" + longitude
+                thread = new EstateSearchMapThread(Network.URL + "search?latitude=" + latitude + "&longitude=" + longitude
                         + "&estate_type=" + estate_type + "&deal_type=" + deal_type + "&price_type=" + price_type
                         + "&price_from=" + price_from + "&price_to=" + price_to + "&monthly_from=" + monthly_from + "&monthly_to=" + monthly_to
                         + "&extent_from=" + extent_from + "&extent_to=" + extent_to + "&monthly_annual=" + monthly_annual, "POST");
@@ -156,7 +156,7 @@ public class MainActivity extends FragmentActivity {
             } else {
                 // 지도의 좌표, 줌 값을 토대로 지도 중심 반경 내의 매물을 검색하여 클러스터로 띄움
                 Log.i("modelhouse", "[초기 검색[검색 필터 미적용]] http://52.79.106.71/api/search?latitude=" + latitude + "&longtitude=" + longitude + "&zoom=" + zoom);
-                thread = new EstateSearchMapThread("http://52.79.106.71/api/search?latitude=" + latitude + "&longtitude=" + longitude + "&zoom=" + zoom, "GET");
+                thread = new EstateSearchMapThread(Network.URL + "search?latitude=" + latitude + "&longtitude=" + longitude + "&zoom=" + zoom, "GET");
                 thread.start();
             }
         }
@@ -268,7 +268,7 @@ public class MainActivity extends FragmentActivity {
                                         +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
                                         +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
 
-                                thread = new EstateSearchMapThread("http://52.79.106.71/api/search?latitude="+latitude+"&longitude="+longitude
+                                thread = new EstateSearchMapThread(Network.URL + "search?latitude="+latitude+"&longitude="+longitude
                                         +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
                                         +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
                                         +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual, "POST");
@@ -346,7 +346,7 @@ public class MainActivity extends FragmentActivity {
                         if(estate_type==0 && deal_type==0 && price_type==0 && price_from==0 && price_to==10000 && monthly_from==0 && monthly_to==10000 && extent_from==0 && extent_to==10000 && monthly_annual==0){
                             Log.i("modelhouse", "[초기 화면 지도 이동] http://52.79.106.71/api/search?latitude="+latitude+"&longtitude="+longitude+"&zoom="+zoom);
 
-                            thread = new EstateSearchMapThread("http://52.79.106.71/api/search?latitude="+latitude+"&longtitude="+longitude+"&zoom="+zoom, "GET");
+                            thread = new EstateSearchMapThread(Network.URL + "search?latitude="+latitude+"&longtitude="+longitude+"&zoom="+zoom, "GET");
                             thread.start();
                         }else{
                             Log.i("modelhouse", "[초기 화면 지도 이동] http://52.79.106.71/api/search?latitude="+latitude+"&longitude="+longitude
@@ -354,7 +354,7 @@ public class MainActivity extends FragmentActivity {
                                     +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
                                     +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
 
-                            thread = new EstateSearchMapThread("http://52.79.106.71/api/search?latitude="+latitude+"&longitude="+longitude
+                            thread = new EstateSearchMapThread(Network.URL + "search?latitude="+latitude+"&longitude="+longitude
                                     +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
                                     +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
                                     +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual, "POST");

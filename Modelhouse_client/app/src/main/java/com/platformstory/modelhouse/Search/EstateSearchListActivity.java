@@ -20,7 +20,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class EstateSearchListActivity  extends Activity {
+public class
+EstateSearchListActivity  extends Activity {
     ProgressDialog mProgress;
     ArrayList<Estate> estates;
 
