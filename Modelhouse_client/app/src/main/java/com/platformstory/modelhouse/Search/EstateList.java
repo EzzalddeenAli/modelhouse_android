@@ -54,7 +54,7 @@ public class EstateList extends BaseAdapter{
         }
         img = (ImageView)convertView.findViewById(R.id.estate_photo);
 
-        Glide.with(maincon).load("http://tourplatform.net:2500/storage/files/"+estates.get(position).photo).into(img);
+        Glide.with(maincon).load(Network.IMAGE_URL + "files/"+estates.get(position).photo).into(img);
 
 
 //        (new DownImageThread("http://tourplatform.net:2500/storage/files/"+estates.get(position).photo)).start();

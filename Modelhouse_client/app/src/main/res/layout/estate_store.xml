@@ -82,16 +82,26 @@
                         android:background="#b7b7b7"
                         android:text="읍/면/동 선택"/>
                 </LinearLayout>
+
                 <EditText
+                    android:id="@+id/addr_detail"
                     android:layout_width="match_parent"
                     android:layout_height="65px"
                     android:hint="상세주소 입력"
                     android:background="@drawable/border"/>
+
                 <Button
+                    android:id="@+id/btn_find_latlng"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="위치 확인"
                     android:layout_gravity="center_horizontal"/>
+
+                <RelativeLayout
+                    android:id="@+id/map_view"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="500px"/>
 
             </LinearLayout>
 
@@ -526,6 +536,7 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/price_tv"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="매매가"/>
@@ -538,6 +549,8 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/lv_monthly"
+                        android:visibility="gone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
@@ -556,12 +569,14 @@
 
                     <RadioGroup
                         android:id="@+id/monthly_or_annual"
+                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <RadioButton
                             android:id="@+id/month"
+                            android:checked="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="월"/>
@@ -572,11 +587,30 @@
                             android:text="년"/>
                     </RadioGroup>
 
+                    <LinearLayout
+                        android:id="@+id/manage_price"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="관리비"/>
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="@drawable/border"/>
+
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/estate_land"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -595,8 +629,330 @@
                         android:textSize="40px"
                         android:textColor="#a9311b"/>
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="개별공시지가"/>
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="@drawable/border"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="지목 및 용도"/>
+
+                        <TextView
+                            android:id="@+id/category"
+                            android:text="지목구분"
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="#b7b7b7"
+                            android:padding="10px"
+                            android:layout_margin="5px"
+                            android:layout_weight="1"/>
+                        <TextView
+                            android:id="@+id/usearea"
+                            android:text="용도구분"
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="#b7b7b7"
+                            android:padding="10px"
+                            android:layout_margin="5px"
+                            android:layout_weight="1"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="건폐율"/>
+
+                        <EditText
+                            android:id="@+id/land_ratio_min"
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="@drawable/border"
+                            android:layout_weight="1"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="~"/>
+                        <EditText
+                            android:id="@+id/land_ratio_max"
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="@drawable/border"
+                            android:layout_weight="1"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="용적률"/>
+
+                        <EditText
+                            android:id="@+id/area_ratio_min"
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="@drawable/border"
+                            android:layout_weight="1"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="~"/>
+                        <EditText
+                            android:id="@+id/area_ratio_max"
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="@drawable/border"
+                            android:layout_weight="1"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="대지면적"/>
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="@drawable/border"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/lv_private_extent"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="전용면적"/>
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="@drawable/border"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/lv_support_extent"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="공급면적"/>
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="@drawable/border"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/lv_height"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="층고"/>
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="@drawable/border"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/lv_movein"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="입주가능일"/>
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="@drawable/border"/>
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="융자금"/>
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="@drawable/border"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/lv_floors"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="건물층수"/>
+
+
+                        <EditText
+                            android:hint="전체층"
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="@drawable/border"
+                            android:layout_weight="1"/>
+
+                        <EditText
+                            android:hint="해당층"
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="@drawable/border"
+                            android:layout_weight="1"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/lv_heater"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="난방방식"/>
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="@drawable/border"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/lv_fuel"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="난방연료"/>
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="@drawable/border"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/lv_complete"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="준공년월"/>
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="@drawable/border"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/lv_parking"
+                        android:visibility="gone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="주차대수"/>
+
+                        <EditText
+                            android:layout_width="fill_parent"
+                            android:layout_height="65px"
+                            android:background="@drawable/border"/>
+
+                    </LinearLayout>
+
                 </LinearLayout>
             </LinearLayout>
+
 
 
 

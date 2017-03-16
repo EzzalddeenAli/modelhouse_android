@@ -2,20 +2,31 @@ package com.platformstory.modelhouse.Estate;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
+import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -23,34 +34,254 @@ import com.platformstory.modelhouse.Common.Network;
 import com.platformstory.modelhouse.Common.UtilLibs;
 import com.platformstory.modelhouse.R;
 
+import net.daum.mf.map.api.MapPOIItem;
+import net.daum.mf.map.api.MapPoint;
+import net.daum.mf.map.api.MapView;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 
-public class EstateStoreActivity extends Activity {
+public class EstateStoreActivity extends Activity implements MapView.MapViewEventListener, MapView.POIItemEventListener{
+    // 매물 위치 정보를 등록하기 위한 변수 정의
+    TextView si;
+    TextView gu;
+    TextView dong;
+
+    EditText addr_detail;
+
+    String[] si_list;
+    String[] gu_list;
+    String[] dong_list;
+
+    int[] gu_ids;
+    int[] dong_ids;
+
+    Button btn_find_latlng;
+    MapView mapView;
+    RelativeLayout mapViewContainer;
+
+    // 매물 사진을 등록하기 위한 버튼과 이미지 뷰 정의
     Button btn_photo_1, btn_photo_2, btn_photo_3, btn_photo_4, btn_photo_5, btn_photo_6, btn_photo_7, btn_photo_8, btn_photo_9, btn_photo_10;
     Button btn_photo_11, btn_photo_12, btn_photo_13, btn_photo_14, btn_photo_15;
     ImageView img_photo_1, img_photo_2, img_photo_3, img_photo_4, img_photo_5, img_photo_6, img_photo_7, img_photo_8, img_photo_9, img_photo_10;
     ImageView img_photo_11, img_photo_12, img_photo_13, img_photo_14, img_photo_15;
 
-    Button submit;
-
-    final static int SELECT_PICTURE = 2;
-
-    private String selectedImagePath;
     private int button_id;
 
-    String absolutePath;
+    String[] absolutePath;
+
+    // 매물 등록 항목에 대한 입력 양식 변수
+    RadioGroup estate_type;
+
+    LinearLayout lv_private_extent;
+    LinearLayout lv_support_extent;
+    LinearLayout lv_height;
+    LinearLayout lv_movein;
+    LinearLayout lv_floors;
+    LinearLayout lv_heater;
+    LinearLayout lv_fuel;
+    LinearLayout lv_complete;
+    LinearLayout lv_parking;
+
+    RadioGroup rg_price_type;
+    TextView price_tv;
+
+    LinearLayout lv_monthly;
+    RadioGroup monthly_or_annual;
+    LinearLayout manage_price_lv;
+
+    TextView category;
+    TextView usearea;
+
+    EditText land_ratio_min;
+    EditText land_ratio_max;
+    EditText area_ratio_min;
+    EditText area_ratio_max;
+
+    Button submit;
+
+    // 인텐트 관련 상수들
+    final static int SELECT_PICTURE = 2;
+
+
+    // 서버 요청 시 입력 파라미터로 보낼 값에 대한 변수/ 초기값은 0 또는 null 이며,
+    // 서버로 요청하기 전 필수 입력 항목 확인 시에 이 값이 설정되어 있지 않으면 입력 하도록 유도하는 메시지를 띄움
+    int addr_si_id=0;
+    int addr_gu_id=0;
+    int addr_dong_id=0;
+
+    double latitude=0;
+    double longitude=0;
+
+    int type=0;
+    int price_type=0;
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.estate_store);
+
+        //시-구-동 선택을 위한 텍스트 뷰 선언과 리스너 등록
+        si = (TextView)findViewById(R.id.si);
+        gu = (TextView)findViewById(R.id.gu);
+        dong = (TextView)findViewById(R.id.dong);
+
+        addr_detail = (EditText) findViewById(R.id.addr_detail);
+
+        si.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!Network.isNetworkAvailable(EstateStoreActivity.this)) {
+                    Log.i("modelhouse", "현재 네트워크에 연결되어 있지 않습니다.\n네트워크 연결 상태를 확인해 주세요");
+                    Toast.makeText(EstateStoreActivity.this, "현재 네트워크에 연결되어 있지 않습니다.\n네트워크 연결 상태를 확인해 주세요", Toast.LENGTH_LONG).show();
+                } else {
+                    si_list = new String[]{"서울", "인천", "경기"};
+                    AlertDialog.Builder dlg = new AlertDialog.Builder(EstateStoreActivity.this);
+                    dlg.setTitle("도/시 선택");
+                    dlg.setItems(si_list, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            addr_si_id = i + 1;
+                            gu_list = null;
+                            gu_ids = null;
+                            dong_list = null;
+                            dong_ids = null;
+                            si.setText(si_list[i]);
+                            gu.setText("시/군/구 선택");
+                            dong.setText("읍/면/동 선택");
+                            AddressThread addrThread = new AddressThread(Network.URL + "address?table=addr_gues&value=" + addr_si_id, "addr_gues", "POST");
+                            addrThread.start();
+                        }
+                    });
+                    dlg.setPositiveButton("닫기", null);
+                    dlg.show();
+                }
+            }
+        });
+
+        gu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!Network.isNetworkAvailable(EstateStoreActivity.this)){
+                    Log.i("modelhouse","현재 네트워크에 연결되어 있지 않습니다.\n네트워크 연결 상태를 확인해 주세요");
+                    Toast.makeText(EstateStoreActivity.this, "현재 네트워크에 연결되어 있지 않습니다.\n네트워크 연결 상태를 확인해 주세요", Toast.LENGTH_LONG).show();
+                }else {
+                    if (gu_list == null) {
+                        Toast.makeText(EstateStoreActivity.this, "시/도 를 먼저 선택하세요", Toast.LENGTH_LONG).show();
+                    } else {
+                        AlertDialog.Builder dlg = new AlertDialog.Builder(EstateStoreActivity.this);
+                        dlg.setTitle("시/군/구 선택");
+                        dlg.setItems(gu_list, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                addr_gu_id = gu_ids[i];
+                                dong_list = null;
+                                dong_ids = null;
+                                gu.setText(gu_list[i]);
+                                dong.setText("읍/면/동 선택");
+                                AddressThread addrThread = new AddressThread(Network.URL + "address?table=addr_dongs&value=" + gu_ids[i], "addr_dongs", "POST");
+                                addrThread.start();
+                            }
+                        });
+                        dlg.setPositiveButton("닫기", null);
+                        dlg.show();
+                    }
+                }
+            }
+        });
+
+        dong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!Network.isNetworkAvailable(EstateStoreActivity.this)){
+                    Log.i("modelhouse","현재 네트워크에 연결되어 있지 않습니다.\n네트워크 연결 상태를 확인해 주세요");
+                    Toast.makeText(EstateStoreActivity.this, "현재 네트워크에 연결되어 있지 않습니다.\n네트워크 연결 상태를 확인해 주세요", Toast.LENGTH_LONG).show();
+                }else {
+                    if (dong_list == null) {
+                        Toast.makeText(EstateStoreActivity.this, "시/군/구 를 먼저 선택하세요", Toast.LENGTH_LONG).show();
+                    } else {
+                        AlertDialog.Builder dlg = new AlertDialog.Builder(EstateStoreActivity.this);
+                        dlg.setTitle("읍/면/동 선택");
+                        dlg.setItems(dong_list, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                addr_dong_id = dong_ids[i];
+                                dong.setText(dong_list[i]);
+
+//                                Log.i(UtilLibs.LOG_TAG, "si : "+addr_si_id + ", gu : " + addr_gu_id + ", dong : " + addr_dong_id);
+                            }
+                        });
+                        dlg.setPositiveButton("닫기", null);
+                        dlg.show();
+                    }
+                }
+            }
+        });
+
+        // 입력된 주소를 바탕으로 위치 검색을 한다. 위치 검색이 끝나고 나면 파라미터 값인 위도,경도값이 설정되며 해당 위치가 다음(Daum) 지도로 출력.
+        btn_find_latlng = (Button)findViewById(R.id.btn_find_latlng);
+        btn_find_latlng.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(addr_dong_id==0){
+                    Toast.makeText(EstateStoreActivity.this, "주소를 먼저 선택하세요", Toast.LENGTH_LONG).show();
+                }else {
+                    Geocoder geocoder = new Geocoder(EstateStoreActivity.this, Locale.KOREA);
+
+                    String location_dong = si.getText() + " " + gu.getText() + " " + dong.getText();
+                    String location_jibun = location_dong + addr_detail.getText();
+
+                    Log.i(UtilLibs.LOG_TAG, location_jibun);
+
+                    try {
+                        List<Address> addrs = geocoder.getFromLocationName(location_dong, 1);
+
+                        latitude = addrs.get(0).getLatitude();
+                        longitude = addrs.get(0).getLongitude();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (mapView != null) {
+                        mapViewContainer.removeView(mapView);
+                    }
+
+                    mapView = new MapView(EstateStoreActivity.this);
+                    mapView.setDaumMapApiKey(UtilLibs.DAUM_API_KEY);
+                    mapView.setMapViewEventListener(EstateStoreActivity.this);
+                    mapView.setPOIItemEventListener(EstateStoreActivity.this);
+
+                    mapViewContainer = (RelativeLayout) findViewById(R.id.map_view);
+                    mapViewContainer.setVisibility(View.VISIBLE);
+                    mapViewContainer.addView(mapView);
+                }
+            }
+        });
 
         btn_photo_1 = (Button)findViewById(R.id.btn_photo_1);
         btn_photo_2 = (Button)findViewById(R.id.btn_photo_2);
@@ -100,12 +331,225 @@ public class EstateStoreActivity extends Activity {
         img_photo_14 = (ImageView)findViewById(R.id.img_photo_14);
         img_photo_15 = (ImageView)findViewById(R.id.img_photo_15);
 
+        absolutePath = new String[15];
 
+
+
+        // 각종 뷰 및 입력 양식 정의
+        estate_type = (RadioGroup) findViewById(R.id.estate_type);
+
+
+
+        rg_price_type = (RadioGroup)findViewById(R.id.price_type);
+        price_tv = (TextView)findViewById(R.id.price_tv);
+        lv_monthly = (LinearLayout)findViewById(R.id.lv_monthly);
+        monthly_or_annual = (RadioGroup)findViewById(R.id.monthly_or_annual);
+        manage_price_lv = (LinearLayout)findViewById(R.id.manage_price);
+
+        lv_private_extent = (LinearLayout)findViewById(R.id.lv_private_extent);
+        lv_support_extent = (LinearLayout)findViewById(R.id.lv_support_extent);
+        lv_height = (LinearLayout)findViewById(R.id.lv_height);
+        lv_movein = (LinearLayout)findViewById(R.id.lv_movein);
+        lv_floors = (LinearLayout)findViewById(R.id.lv_floors);
+        lv_heater = (LinearLayout)findViewById(R.id.lv_heater);
+        lv_fuel = (LinearLayout)findViewById(R.id.lv_fuel);
+        lv_complete = (LinearLayout)findViewById(R.id.lv_complete);
+        lv_parking = (LinearLayout)findViewById(R.id.lv_parking);
+
+
+        // 토지, 건물 라디오 버튼 선택했을 때 파라미터 값 설정 및 뷰 상태 변경
+        estate_type.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch(checkedId){
+                    case R.id.land:
+                        type = 1;
+                        manage_price_lv.setVisibility(View.GONE);
+
+                        lv_private_extent.setVisibility(View.GONE);
+                        lv_support_extent.setVisibility(View.GONE);
+                        lv_height.setVisibility(View.GONE);
+                        lv_movein.setVisibility(View.GONE);
+                        lv_floors.setVisibility(View.GONE);
+                        lv_heater.setVisibility(View.GONE);
+                        lv_fuel.setVisibility(View.GONE);
+                        lv_complete.setVisibility(View.GONE);
+                        lv_parking.setVisibility(View.GONE);
+
+                        break;
+                    case R.id.building:
+                        type = 2;
+                        if(price_type==3){
+                            manage_price_lv.setVisibility(View.VISIBLE);
+                        }
+
+                        lv_private_extent.setVisibility(View.VISIBLE);
+                        lv_support_extent.setVisibility(View.VISIBLE);
+                        lv_height.setVisibility(View.VISIBLE);
+                        lv_movein.setVisibility(View.VISIBLE);
+                        lv_floors.setVisibility(View.VISIBLE);
+                        lv_heater.setVisibility(View.VISIBLE);
+                        lv_fuel.setVisibility(View.VISIBLE);
+                        lv_complete.setVisibility(View.VISIBLE);
+                        lv_parking.setVisibility(View.VISIBLE);
+
+                        break;
+                }
+            }
+        });
+
+        // 매매, 전세, 임대 라디오 버튼 선택했을 때 파라미터 값 설정 및 뷰 상태 변경
+        rg_price_type.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch(checkedId){
+                    case R.id.trade:
+                        price_type = 1;
+                        price_tv.setText("매매가");
+                        lv_monthly.setVisibility(View.GONE);
+                        monthly_or_annual.setVisibility(View.GONE);
+                        manage_price_lv.setVisibility(View.GONE);
+                        break;
+                    case R.id.lent:
+                        price_type = 2;
+                        price_tv.setText("전세가");
+                        lv_monthly.setVisibility(View.GONE);
+                        monthly_or_annual.setVisibility(View.GONE);
+                        manage_price_lv.setVisibility(View.GONE);
+                        break;
+                    case R.id.monthly:
+                        price_type = 3;
+                        price_tv.setText("보증금");
+                        lv_monthly.setVisibility(View.VISIBLE);
+                        monthly_or_annual.setVisibility(View.VISIBLE);
+                        if(type==2){
+                            manage_price_lv.setVisibility(View.VISIBLE);
+                        }
+                        break;
+                }
+            }
+        });
+
+        category = (TextView)findViewById(R.id.category);
+        category.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder dlg = new AlertDialog.Builder(EstateStoreActivity.this);
+
+                final String categories[] = {"전","답","과수원","목장용지","임야","광천지","염전","대","공장용지","학교용지","주차장","주유소용지","창고용지","도로","철도용지",
+                        "제방","하천","구거","유지","양어장","수도용지","공원","체육용지","유원지","종교용지","사적지","요지","잡종지"};
+
+                dlg.setTitle("지목구분 선택");
+                dlg.setItems(categories, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        category.setText(categories[i]);
+                    }
+                });
+                dlg.setPositiveButton("닫기", null);
+                dlg.show();
+            }
+        });
+
+        land_ratio_min = (EditText)findViewById(R.id.land_ratio_min);
+        land_ratio_max = (EditText)findViewById(R.id.land_ratio_max);
+        area_ratio_min = (EditText)findViewById(R.id.area_ratio_min);
+        area_ratio_max = (EditText)findViewById(R.id.area_ratio_max);
+
+        usearea = (TextView)findViewById(R.id.usearea);
+        usearea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder dlg = new AlertDialog.Builder(EstateStoreActivity.this);
+
+                final String useareas[] = {"제1종전용주거지역","제2종전용주거지역","제1종일반주거지역","제2종일반주거지역","제3종일반주거지역","준주거지역","중심상업지역",
+                        "일반상업지역","근린상업지역","유통상업지역","전용공업지역","일반공업지역","준공업지역","보전녹지지역","생산녹지지역","자연녹지지역","보전관리지역",
+                        "생산관리지역","계획관리지역","농림지역","자연환경보전지역"};
+
+                dlg.setTitle("용도구분 선택");
+                dlg.setItems(useareas, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        usearea.setText(useareas[i]);
+
+                        if(type==1) {
+                            int[] land_area_ratios = null;
+                            switch (i) {
+                                case 0:
+                                    land_area_ratios = new int[]{0, 50, 50, 100};
+                                    break;
+                                case 1:
+                                    land_area_ratios = new int[]{0, 50, 100, 150};
+                                    break;
+                                case 2:
+                                    land_area_ratios = new int[]{0, 60, 100, 200};
+                                    break;
+                                case 3:
+                                    land_area_ratios = new int[]{0, 50, 150, 250};
+                                    break;
+                                case 4:
+                                    land_area_ratios = new int[]{0, 50, 200, 300};
+                                    break;
+                                case 5:
+                                    land_area_ratios = new int[]{0, 70, 200, 500};
+                                    break;
+                                case 6:
+                                    land_area_ratios = new int[]{0, 90, 400, 1500};
+                                    break;
+                                case 7:
+                                    land_area_ratios = new int[]{0, 80, 300, 1300};
+                                    break;
+                                case 8:
+                                    land_area_ratios = new int[]{0, 70, 200, 900};
+                                    break;
+                                case 9:
+                                    land_area_ratios = new int[]{0, 80, 200, 1100};
+                                    break;
+                                case 10:
+                                    land_area_ratios = new int[]{0, 70, 150, 300};
+                                    break;
+                                case 11:
+                                    land_area_ratios = new int[]{0, 70, 200, 350};
+                                    break;
+                                case 12:
+                                    land_area_ratios = new int[]{0, 70, 200, 400};
+                                    break;
+                                case 16:
+                                case 17:
+                                case 18:
+                                case 19:
+                                case 20:
+                                case 13:
+                                    land_area_ratios = new int[]{0, 20, 50, 80};
+                                    break;
+                                case 14:
+                                case 15:
+                                    land_area_ratios = new int[]{0, 20, 50, 100};
+                                    break;
+                            }
+
+                            land_ratio_min.setText(land_area_ratios[0] + "");
+                            land_ratio_max.setText(land_area_ratios[1] + "");
+                            area_ratio_min.setText(land_area_ratios[2] + "");
+                            area_ratio_max.setText(land_area_ratios[3] + "");
+                        }
+                    }
+                });
+                dlg.setPositiveButton("닫기", null);
+                dlg.show();
+            }
+        });
+
+
+
+        // 모든 입력 양식을 채우고 매물 등록 버튼을 누를 때 서버로 입력 내용 및 이미지를 전송
         submit = (Button)findViewById(R.id.submit);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                ImageUploadTask imageUploadTask = new ImageUploadTask(Network.URL + "upload", absolutePath);
+                imageUploadTask.execute();
             }
         });
     }
@@ -129,74 +573,73 @@ public class EstateStoreActivity extends Activity {
         if (requestCode == SELECT_PICTURE) {
             if (resultCode == Activity.RESULT_OK) {
                 Uri selectedImageUri = data.getData();
-                selectedImagePath = getPath(selectedImageUri);
-
-                String urlString = Network.URL + "upload";
+//                selectedImagePath = getPath(selectedImageUri);
 
                 //절대경로를 획득한다!!! 중요~
                 Cursor c = getContentResolver().query(Uri.parse(selectedImageUri.toString()), null,null,null,null);
                 c.moveToNext();
-                absolutePath = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
-
-                new Thread(new Runnable() {
-                    public void run() {
-                        runOnUiThread(new Runnable() {
-                            public void run() {
-                                Log.i(UtilLibs.LOG_TAG,"uploading started.....");
-                            }
-                        });
-
-                        uploadFile(absolutePath);
-
-                    }
-                }).start();
 
 
                 switch (button_id){
                     case R.id.btn_photo_1:
                         Glide.with(this).load(selectedImageUri).into(img_photo_1);
+                        absolutePath[0] = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
                         break;
                     case R.id.btn_photo_2:
                         Glide.with(this).load(selectedImageUri).into(img_photo_2);
+                        absolutePath[1] = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
                         break;
                     case R.id.btn_photo_3:
                         Glide.with(this).load(selectedImageUri).into(img_photo_3);
+                        absolutePath[2] = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
                         break;
                     case R.id.btn_photo_4:
                         Glide.with(this).load(selectedImageUri).into(img_photo_4);
+                        absolutePath[3] = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
                         break;
                     case R.id.btn_photo_5:
                         Glide.with(this).load(selectedImageUri).into(img_photo_5);
+                        absolutePath[4] = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
                         break;
                     case R.id.btn_photo_6:
                         Glide.with(this).load(selectedImageUri).into(img_photo_6);
+                        absolutePath[5] = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
                         break;
                     case R.id.btn_photo_7:
                         Glide.with(this).load(selectedImageUri).into(img_photo_7);
+                        absolutePath[6] = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
                         break;
                     case R.id.btn_photo_8:
                         Glide.with(this).load(selectedImageUri).into(img_photo_8);
+                        absolutePath[7] = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
                         break;
                     case R.id.btn_photo_9:
                         Glide.with(this).load(selectedImageUri).into(img_photo_9);
+                        absolutePath[8] = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
                         break;
                     case R.id.btn_photo_10:
                         Glide.with(this).load(selectedImageUri).into(img_photo_10);
+                        absolutePath[9] = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
                         break;
                     case R.id.btn_photo_11:
                         Glide.with(this).load(selectedImageUri).into(img_photo_11);
+                        absolutePath[10] = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
                         break;
                     case R.id.btn_photo_12:
                         Glide.with(this).load(selectedImageUri).into(img_photo_12);
+                        absolutePath[11] = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
                         break;
                     case R.id.btn_photo_13:
                         Glide.with(this).load(selectedImageUri).into(img_photo_13);
+                        absolutePath[12] = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
                         break;
                     case R.id.btn_photo_14:
                         Glide.with(this).load(selectedImageUri).into(img_photo_14);
+                        absolutePath[13] = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
                         break;
                     case R.id.btn_photo_15:
                         Glide.with(this).load(selectedImageUri).into(img_photo_15);
+                        absolutePath[14] = c.getString(c.getColumnIndex(MediaStore.MediaColumns.DATA));
                         break;
                 }
             }
@@ -224,6 +667,67 @@ public class EstateStoreActivity extends Activity {
         return uri.getPath();
     }
 
+
+
+
+    class ImageUploadTask extends AsyncTask<Integer, Integer, Integer>{
+        String url;
+        String[] path;
+
+        ImageUploadTask(String url, String[] path){
+            this.url = url;
+            this.path = path;
+        }
+
+        @Override
+        protected Integer doInBackground(Integer... params) {
+            // Create MultipartEntityBuilder
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+            builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+
+            // Set String Params
+//                builder.addTextBody("Key 값", "Value 값", ContentType.create("Multipart/related", "UTF-8"));
+//                builder.addTextBody("Key 값", "Value 값", ContentType.create("Multipart/related", "UTF-8"));
+
+            Log.i(UtilLibs.LOG_TAG, "사진 리스트 개수 : "+absolutePath.length+"개");
+
+            // Set File Params
+            for(int i=0; i<path.length; i++){
+                Log.i(UtilLibs.LOG_TAG, path[i]);
+                builder.addPart("uploaded_file_"+i, new FileBody(new File(path[i])));
+            }
+
+            // File 이 여러개 인 경우 아래와 같이 adpart 를 하나 더 추가해 주면 된다.
+//                builder.addPart("Key 값", new FileBody(new File("File 경로")));
+
+            // Send Request
+            try {
+                InputStream inputStream = null;
+                HttpClient httpClient = AndroidHttpClient.newInstance("Android");
+                HttpPost httpPost = new HttpPost(url);
+                httpPost.setEntity(builder.build());
+                HttpResponse httpResponse = httpClient.execute(httpPost);
+                HttpEntity httpEntity = httpResponse.getEntity();
+                inputStream = httpEntity.getContent();
+
+                // Response
+                BufferedReader bufferdReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                StringBuilder stringBuilder = new StringBuilder();
+                String line = null;
+
+                while ((line = bufferdReader.readLine()) != null) {
+                    Log.i(UtilLibs.LOG_TAG, line);
+                    stringBuilder.append(line + "\n");
+                }
+                inputStream.close();
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+//            Log.i(UtilLibs.LOG_TAG, selectedImagePath + ",\n" + absolutePath);
+//            Log.i(UtilLibs.LOG_TAG, urlString);
+            return 0;
+        }
+    }
 //    여러개 사진 선택가능하게할때
 //    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true); 이런식으로 intent에 MULTIPLE을 허용해준다.
 //
@@ -240,132 +744,126 @@ public class EstateStoreActivity extends Activity {
 //            }
 //        }
 //    }
-    public int uploadFile(String sourceFileUri) {
 
-        String fileName = sourceFileUri;
+    // 매물의 주소(시,구,동)를 선택을 위한 네트워크 접속을 위한 스레드
+    class AddressThread extends Thread {
+        String mAddr;
+        String table;
+        String method;
 
-        HttpURLConnection conn = null;
-        DataOutputStream dos = null;
-        String lineEnd = "\r\n";
-        String twoHyphens = "--";
-        String boundary = "*****";
-        int bytesRead, bytesAvailable, bufferSize;
-        byte[] buffer;
-        int maxBufferSize = 1 * 1024 * 1024;
-        File sourceFile = new File(sourceFileUri);
-        int serverResponseCode = 0;
+        AddressThread(String mAddr, String table, String method) {
+            this.table = table;
+            this.mAddr = mAddr;
+            this.method = method;
+        }
 
-        if (!sourceFile.isFile()) {
-            Log.e("uploadFile", "Source File not exist :"+sourceFileUri);
+        public void run() {
+            switch(table){
+                case "addr_gues" :
+                    String gues = Network.DownloadHtml(mAddr, method);
 
-//            runOnUiThread(new Runnable() {
-//                public void run() {
-//                    messageText.setText("Source File not exist :"+uploadFilePath + "" + uploadFileName);
-//                }
-//            });
-
-            return 0;
-        }else{
-            try {
-
-                // open a URL connection to the Servlet
-                FileInputStream fileInputStream = new FileInputStream(sourceFile);
-                URL url = new URL(UtilLibs.LOG_TAG + "upload");
-
-                // Open a HTTP  connection to  the URL
-                conn = (HttpURLConnection) url.openConnection();
-                conn.setDoInput(true); // Allow Inputs
-                conn.setDoOutput(true); // Allow Outputs
-                conn.setUseCaches(false); // Don't use a Cached Copy
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Connection", "Keep-Alive");
-                conn.setRequestProperty("ENCTYPE", "multipart/form-data");
-                conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-                conn.setRequestProperty("uploaded_file", fileName);
-
-                dos = new DataOutputStream(conn.getOutputStream());
-
-                dos.writeBytes(twoHyphens + boundary + lineEnd);
-                dos.writeBytes("Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
-                        + fileName + "\"" + lineEnd);
-
-                dos.writeBytes(lineEnd);
-
-                // create a buffer of  maximum size
-                bytesAvailable = fileInputStream.available();
-
-                bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                buffer = new byte[bufferSize];
-
-                // read file and write it into form...
-                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
-                while (bytesRead > 0) {
-
-                    dos.write(buffer, 0, bufferSize);
-                    bytesAvailable = fileInputStream.available();
-                    bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
-                }
-
-                // send multipart form data necesssary after file data...
-                dos.writeBytes(lineEnd);
-                dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-
-                // Responses from the server (code and message)
-                serverResponseCode = conn.getResponseCode();
-                String serverResponseMessage = conn.getResponseMessage();
-
-                Log.i("uploadFile", "HTTP Response is : "
-                        + serverResponseMessage + ": " + serverResponseCode);
-
-                if(serverResponseCode == 200){
-
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-
-                            String msg = "File Upload Completed.\n\n See uploaded file here : \n\n"
-                                    +sourceFileUri;
-
-                            messageText.setText(msg);
-                            Toast.makeText(EstateStoreActivity.this, "File Upload Complete.",
-                                    Toast.LENGTH_SHORT).show();
+                    try{
+                        JSONArray ja = new JSONArray(gues);
+                        gu_ids = new int[ja.length()-1];
+                        gu_list = new String[ja.length()-1];
+                        for(int i=0; i<ja.length()-1; i++){
+                            JSONObject guObj = ja.getJSONObject(i);
+                            gu_ids[i]=guObj.getInt("id");
+                            gu_list[i]=guObj.getString("name");
                         }
-                    });
-                }
+                    }catch(JSONException e){                    }
+                    break;
+                case "addr_dongs" :
+                    String dongs = Network.DownloadHtml(mAddr, method);
 
-                //close the streams //
-                fileInputStream.close();
-                dos.flush();
-                dos.close();
-
-            } catch (MalformedURLException ex) {
-
-                ex.printStackTrace();
-
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        Log.i(UtilLibs.LOG_TAG, "MalformedURLException");
-                    }
-                });
-
-                Log.e(UtilLibs.LOG_TAG, "error: " + ex.getMessage(), ex);
-            } catch (Exception e) {
-
-
-                e.printStackTrace();
-
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        Log.e(UtilLibs.LOG_TAG,"Got Exception : see logcat ");
-                    }
-                });
-                Log.e(UtilLibs.LOG_TAG, "Exception : " + e.getMessage(), e);
+                    try{
+                        JSONArray ja = new JSONArray(dongs);
+                        dong_ids = new int[ja.length()-1];
+                        dong_list = new String[ja.length()-1];
+                        for(int i=0; i<ja.length()-1; i++){
+                            JSONObject guObj = ja.getJSONObject(i);
+                            dong_ids[i]=guObj.getInt("id");
+                            dong_list[i]=guObj.getString("name");
+                        }
+                    }catch(JSONException e){                    }
+                    break;
             }
-//            dialog.dismiss();
-            return serverResponseCode;
+        }
+    }
 
-        } // End else block
+    @Override
+    public void onMapViewInitialized(MapView mapView) {
+        mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(latitude, longitude), true);
+
+        MapPOIItem marker = new MapPOIItem();
+        marker.setItemName("Default Marker");
+        marker.setTag(0);
+        marker.setMapPoint(MapPoint.mapPointWithGeoCoord(latitude, longitude));
+        marker.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
+        marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+
+        mapView.addPOIItem(marker);
+        mapView.selectPOIItem(marker, true);
+        mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(latitude, longitude), false);
+    }
+
+    @Override
+    public void onMapViewCenterPointMoved(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewZoomLevelChanged(MapView mapView, int i) {
+
+    }
+
+    @Override
+    public void onMapViewSingleTapped(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewDoubleTapped(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewLongPressed(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewDragStarted(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewDragEnded(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewMoveFinished(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
+
+    }
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
+
+    }
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
+
+    }
+
+    @Override
+    public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {
+
     }
 }

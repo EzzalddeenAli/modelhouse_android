@@ -20,7 +20,26 @@ class UploadController extends Controller
 
     public function store(Request $request)
     {
-        echo "lslsls";
+        echo "gggg:";
+
+
+        $photos0 = $request->file('uploaded_file_0');
+        $photos1 = $request->file('uploaded_file_1');
+        $photos2 = $request->file('uploaded_file_2');
+
+        if($photos0!=null) {
+            $photos0->storeAs('public/testupload', $photos0->getClientOriginalName());
+        }
+
+        if($photos1!=null) {
+            $photos1->storeAs('public/testupload', $photos1->getClientOriginalName());
+        }
+
+        if($photos2!=null) {
+            $photos2->storeAs('public/testupload', $photos2->getClientOriginalName());
+        }                        
+
+        echo "complete";
     }
 
     /**

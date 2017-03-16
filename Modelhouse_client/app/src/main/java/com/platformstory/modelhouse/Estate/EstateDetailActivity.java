@@ -337,8 +337,7 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
             }
             ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
 //            imageView.setImageBitmap(bitmaps.get(position));
-            Glide.with(mContext).load("http://tourplatform.net:2500/storage/files/"+imageUrls.get(position)).into(imageView);
-
+            Glide.with(mContext).load(Network.IMAGE_URL + "files/"+imageUrls.get(position)).into(imageView);
 //            출처: http://ogoons.com/119 [오군의 기술 블로그]
 
             return convertView;
