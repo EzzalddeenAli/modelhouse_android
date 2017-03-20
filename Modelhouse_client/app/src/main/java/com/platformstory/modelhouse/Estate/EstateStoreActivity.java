@@ -15,6 +15,7 @@ import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.IdRes;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -135,11 +136,39 @@ public class EstateStoreActivity extends Activity implements MapView.MapViewEven
     int addr_gu_id=0;
     int addr_dong_id=0;
 
+    String addr1;
+    String addr2;
+
+
+
     double latitude=0;
     double longitude=0;
 
     int type=0;
     int price_type=0;
+    String price;
+    String monthly_param;
+    int monthly_or_annual_param;
+    String manage_price_param;
+
+    String public_price;
+    String category_param;
+    String usearea_param;
+    String land_ratio_param;
+    String area_ratio_param;
+    String extent;
+    String private_extent;
+    String support_extent;
+    String height;
+    String movein;
+    String loan;
+    String total_floor;
+    String floor;
+    String heater;
+    String fuel;
+    String complete;
+    String parking;
+
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -233,6 +262,7 @@ public class EstateStoreActivity extends Activity implements MapView.MapViewEven
                                 addr_dong_id = dong_ids[i];
                                 dong.setText(dong_list[i]);
 
+                                addr1 = si.getText() + " " + gu.getText() + " " + dong.getText();
 //                                Log.i(UtilLibs.LOG_TAG, "si : "+addr_si_id + ", gu : " + addr_gu_id + ", dong : " + addr_dong_id);
                             }
                         });
@@ -430,6 +460,20 @@ public class EstateStoreActivity extends Activity implements MapView.MapViewEven
             }
         });
 
+        monthly_or_annual.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                switch (checkedId){
+                    case R.id.month:
+                        monthly_or_annual_param = 1;
+                        break;
+                    case  R.id.annual:
+                        monthly_or_annual_param = 2;
+                        break;
+                }
+            }
+        });
+
         category = (TextView)findViewById(R.id.category);
         category.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -444,6 +488,7 @@ public class EstateStoreActivity extends Activity implements MapView.MapViewEven
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         category.setText(categories[i]);
+                        category_param = categories[i];
                     }
                 });
                 dlg.setPositiveButton("닫기", null);
@@ -471,6 +516,7 @@ public class EstateStoreActivity extends Activity implements MapView.MapViewEven
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         usearea.setText(useareas[i]);
+                        usearea_param = useareas[i];
 
                         if(type==1) {
                             int[] land_area_ratios = null;
@@ -547,9 +593,44 @@ public class EstateStoreActivity extends Activity implements MapView.MapViewEven
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                addr2 = ((EditText)findViewById(R.id.addr_detail)).getText().toString();
 
-                ImageUploadTask imageUploadTask = new ImageUploadTask(Network.URL + "upload", absolutePath);
-                imageUploadTask.execute();
+                price = ((EditText)findViewById(R.id.price)).getText().toString();
+                monthly_param = ((EditText)findViewById(R.id.monthly_param)).getText().toString();
+                manage_price_param = ((EditText)findViewById(R.id.manage_price_param)).getText().toString();
+
+                public_price = ((EditText)findViewById(R.id.public_price)).getText().toString();
+
+                land_ratio_param = ((EditText)findViewById(R.id.land_ratio_min)).getText().toString() + "~" + ((EditText)findViewById(R.id.land_ratio_max)).getText().toString();
+                area_ratio_param= ((EditText)findViewById(R.id.area_ratio_min)).getText().toString() + "~" + ((EditText)findViewById(R.id.area_ratio_max)).getText().toString();
+
+                extent = ((EditText)findViewById(R.id.extent)).getText().toString();
+                private_extent = ((EditText)findViewById(R.id.private_extent)).getText().toString();
+                support_extent = ((EditText)findViewById(R.id.support_extent)).getText().toString();
+                height = ((EditText)findViewById(R.id.height)).getText().toString();
+                movein = ((EditText)findViewById(R.id.movein)).getText().toString();
+                loan = ((EditText)findViewById(R.id.loan)).getText().toString();
+                total_floor = ((EditText)findViewById(R.id.total_floor)).getText().toString();
+                floor = ((EditText)findViewById(R.id.floor)).getText().toString();
+                heater = ((EditText)findViewById(R.id.heater)).getText().toString();
+                fuel = ((EditText)findViewById(R.id.fuel)).getText().toString();
+                complete = ((EditText)findViewById(R.id.complete)).getText().toString();
+                parking = ((EditText)findViewById(R.id.parking)).getText().toString();
+
+
+                Log.i(UtilLibs.LOG_TAG, "주소 : " + addr1 + " " + addr2);
+                Log.i(UtilLibs.LOG_TAG, "좌표 : " + latitude + " " + longitude);
+                Log.i(UtilLibs.LOG_TAG, "매물 종류(토지/건물) : " + type);
+                Log.i(UtilLibs.LOG_TAG, "판매 유형(매매/전세/임대) : " + price_type);
+                Log.i(UtilLibs.LOG_TAG, "거래가격 : " + price);
+                Log.i(UtilLibs.LOG_TAG, "임대료(임대를 선택한 경우 : " + monthly_param + ", 년/월 : " + monthly_or_annual_param);
+                Log.i(UtilLibs.LOG_TAG, "개별공시지가 : " + public_price);
+                Log.i(UtilLibs.LOG_TAG, "지목 : " + category_param + ", 용도 : " + usearea_param);
+                Log.i(UtilLibs.LOG_TAG, "건폐율 : " + land_ratio_param + ", 용적률 : " + area_ratio_param);
+
+
+//                ImageUploadTask imageUploadTask = new ImageUploadTask(Network.URL + "upload", absolutePath);
+//                imageUploadTask.execute();
             }
         });
     }
