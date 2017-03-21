@@ -25,36 +25,121 @@ class EstateController extends Controller
 
     public function store(Request $request)
     {
-        // echo "gggg:";
-
-
-        // $photos0 = $request->file('uploaded_file_0');
-        // $photos1 = $request->file('uploaded_file_1');
-        // $photos2 = $request->file('uploaded_file_2');
-
-        // if($photos0!=null) {
-        //     $photos0->storeAs('public/testupload', $photos0->getClientOriginalName());
-        // }
-
-        // if($photos1!=null) {
-        //     $photos1->storeAs('public/testupload', $photos1->getClientOriginalName());
-        // }
-
-        // if($photos2!=null) {
-        //     $photos2->storeAs('public/testupload', $photos2->getClientOriginalName());
-        // }
-
-        // echo "complete";
-
-
-
-        ################################################# 1. 파라미터 받아오기 ####################################################
+        // 객체 생성
+        $estate = new estate();
+        $estate_category = new estate_category();
+        $estate_land = new estate_land();
+        $estate_building = new estate_building();
 
         // 매물 아이디, 사용자 아이디, 매물 타입
         $estate_id = $estate::all()->max()->id + 1;
         // $user_id = Auth::user()->id;
         // $deal_type = $this->deal_type($user_id);
         $estate_type = $request->input('type');
+
+        ################################################# 0. 파일 업로드 및 데이터베이스에 저장될 파일 이름 목록 설정 ####################################################
+        // echo "gggg:";
+
+        $photo_names = "";
+
+        $photos0 = $request->file('uploaded_file_0');
+        $photos1 = $request->file('uploaded_file_1');
+        $photos2 = $request->file('uploaded_file_2');
+        $photos3 = $request->file('uploaded_file_3');
+        $photos4 = $request->file('uploaded_file_4');
+        $photos5 = $request->file('uploaded_file_5');
+        $photos6 = $request->file('uploaded_file_6');
+        $photos7 = $request->file('uploaded_file_7');
+        $photos8 = $request->file('uploaded_file_8');
+        $photos9 = $request->file('uploaded_file_9');
+        $photos10 = $request->file('uploaded_file_10');
+        $photos11 = $request->file('uploaded_file_11');
+        $photos12 = $request->file('uploaded_file_12');
+        $photos13 = $request->file('uploaded_file_13');
+        $photos14 = $request->file('uploaded_file_14');
+        $photos15 = $request->file('uploaded_file_15');
+
+
+        if($photos0!=null) {
+            $photos0->storeAs('public/files', $estate_id . "." . $photos0->getClientOriginalName());
+            $photo_names .= $estate_id . "." . $photos0->getClientOriginalName();
+        }
+        if($photos1!=null) {
+            $photos1->storeAs('public/files', $estate_id . "." . $photos1->getClientOriginalName());
+            $photo_names .= "," . $estate_id . "." . $photos1->getClientOriginalName();
+        }
+        if($photos2!=null) {
+            $photos2->storeAs('public/files', $estate_id . "." . $photos2->getClientOriginalName());
+            $photo_names .= "," . $estate_id . "." . $photos2->getClientOriginalName();
+        }
+        if($photos3!=null) {
+            $photos3->storeAs('public/files', $estate_id . "." . $photos3->getClientOriginalName());
+            $photo_names .= "," . $estate_id . "." . $photos3->getClientOriginalName();
+        }
+        if($photos4!=null) {
+            $photos4->storeAs('public/files', $estate_id . "." . $photos4->getClientOriginalName());
+            $photo_names .= "," . $estate_id . "." . $photos4->getClientOriginalName();
+        }
+        if($photos5!=null) {
+            $photos5->storeAs('public/files', $estate_id . "." . $photos5->getClientOriginalName());
+            $photo_names .= "," . $estate_id . "." . $photos5->getClientOriginalName();
+        }
+        if($photos6!=null) {
+            $photos6->storeAs('public/files', $estate_id . "." . $photos6->getClientOriginalName());
+            $photo_names .= "," . $estate_id . "." . $photos6->getClientOriginalName();
+        }
+        if($photos7!=null) {
+            $photos7->storeAs('public/files', $estate_id . "." . $photos7->getClientOriginalName());
+            $photo_names .= "," . $estate_id . "." . $photos7->getClientOriginalName();
+        }
+        if($photos8!=null) {
+            $photos8->storeAs('public/files', $estate_id . "." . $photos8->getClientOriginalName());
+            $photo_names .= "," . $estate_id . "." . $photos8->getClientOriginalName();
+        }
+
+        if($photos9!=null) {
+            $photos9->storeAs('public/files', $estate_id . "." . $photos9->getClientOriginalName());
+            $photo_names .= "," . $estate_id . "." . $photos9->getClientOriginalName();
+        }
+
+        if($photos10!=null) {
+            $photos10->storeAs('public/files', $estate_id . "." . $photos10->getClientOriginalName());
+            $photo_names .= "," . $estate_id . "." . $photos10->getClientOriginalName();
+        }
+
+        if($photos11!=null) {
+            $photos11->storeAs('public/files', $estate_id . "." . $photos11->getClientOriginalName());
+            $photo_names .= "," . $estate_id . "." . $photos11->getClientOriginalName();
+        }
+
+        if($photos12!=null) {
+            $photos12->storeAs('public/files', $estate_id . "." . $photos12->getClientOriginalName());
+            $photo_names .= "," . $estate_id . "." . $photos12->getClientOriginalName();
+        }
+
+        if($photos13!=null) {
+            $photos13->storeAs('public/files', $estate_id . "." . $photos13->getClientOriginalName());
+            $photo_names .= "," . $estate_id . "." . $photos13->getClientOriginalName();
+        }
+
+        if($photos14!=null) {
+            $photos14->storeAs('public/files', $estate_id . "." . $photos14->getClientOriginalName());
+            $photo_names .= "," . $estate_id . "." . $photos14->getClientOriginalName();
+        }
+
+        if($photos15!=null) {
+            $photos15->storeAs('public/files', $estate_id . "." . $photos15->getClientOriginalName());
+            $photo_names .= "," . $estate_id . "." . $photos15->getClientOriginalName();
+        }
+
+        $estate->photo = $photo_names;
+
+
+        // echo "complete";
+
+
+
+        ################################################# 1. 파라미터 받아오기 ####################################################
 
         // 매물 위치와 관련된 정보
         $si_id = $request->input('addr_si_id');
@@ -96,13 +181,7 @@ class EstateController extends Controller
         $manage_price = $request->input('manage_price'); // 관리비
 
 
-        ################################################# 2. 객체 생성하여 받아온 파라메터 세팅 및 데이터베이스에 저장 ####################################################
-
-        // 객체 생성
-        $estate = new estate();
-        $estate_category = new estate_category();
-        $estate_land = new estate_land();
-        $estate_building = new estate_building();
+        ################################################# 2. 객체에 받아온 파라메터 세팅 및 데이터베이스에 저장 ####################################################
 
         // estate 테이블에 저장하기 위한 객체 세팅 (토지와 건물의 공통된 컬럼)
         $estate->user_id = 179;//Auth::user()->id;
@@ -166,7 +245,7 @@ class EstateController extends Controller
                 $estate_building->fuel = $fuel;
                 $estate_building->complete = $complete;
                 $estate_building->parking = $parking;
-                $estate_building->manage_price = $manage_price;
+                $estate_building->maintenance_price = $manage_price;
                 $estate_building->save();                       // 데이터베이스에 저장
                 break;
         }
