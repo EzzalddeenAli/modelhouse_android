@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.platformstory.modelhouse.Common.Estate;
 import com.platformstory.modelhouse.Common.Network;
 import com.platformstory.modelhouse.Estate.EstateDetailActivity;
 import com.platformstory.modelhouse.R;

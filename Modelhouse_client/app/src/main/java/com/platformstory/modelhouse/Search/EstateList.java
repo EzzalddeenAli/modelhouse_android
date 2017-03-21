@@ -13,14 +13,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.platformstory.modelhouse.Common.Estate;
 import com.platformstory.modelhouse.Common.Network;
 import com.platformstory.modelhouse.R;
 
 import java.util.ArrayList;
 
-/**
- * Created by Midas Yoon on 2017-02-21.
- */
+
 public class EstateList extends BaseAdapter{
     Context maincon;
     LayoutInflater Inflator;
@@ -110,26 +109,6 @@ public class EstateList extends BaseAdapter{
 //    };
 }
 
-class Estate{
-    int id; String type; String photo; String price_type; String price; String extent; String category; String usearea;
-    String facility; String addr1; String info; Double latitude; Double longtitude;
 
-    Estate(int id, String type, String photo, String price_type, String price, String extent, String category, String usearea,
-           String facility, String addr1, String info, Double latitude, Double longtitude){
-        this.id = id;
-        this.type = type;
-        this.photo = photo;
-        this.price_type = price_type;
-        this.price = price;
-        this.extent = extent;
-        this.category = category;
-        this.usearea = usearea;
-        this.facility = facility;
-        this.addr1 = addr1;
-        this.info = info;
-        this.latitude = latitude;
-        this.longtitude = longtitude;
-    }
-}
 
 

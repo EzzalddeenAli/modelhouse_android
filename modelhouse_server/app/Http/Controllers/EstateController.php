@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\addr_gue;
 use App\estate;
 use App\user;
+use App\estate_category;
+use App\estate_land;
+use App\estate_building;
 use DB;
 
 class EstateController extends Controller
@@ -22,182 +25,155 @@ class EstateController extends Controller
 
     public function store(Request $request)
     {
-        $user_id = Auth::user()->id;
-        $deal_type = $this->deal_type($user_id);
-        $sido = $request->input('sido');
-        $sigungu = $request->input('sigungu');
-        $bname = $request->input('bname');
-        
-        $si_id = DB::table('addr_sies')->where('name', $sido)->value('id'); // 시 id 검증
-        $gu_id = DB::table('addr_gues')->where('name', $sigungu)->value('id'); // 구 id 검증
-        $dong_id = DB::table('addr_dongs')->where('name', $bname)->where('addr_gu_id', $gu_id)
-        ->value('id');
+        // echo "gggg:";
 
+
+        // $photos0 = $request->file('uploaded_file_0');
+        // $photos1 = $request->file('uploaded_file_1');
+        // $photos2 = $request->file('uploaded_file_2');
+
+        // if($photos0!=null) {
+        //     $photos0->storeAs('public/testupload', $photos0->getClientOriginalName());
+        // }
+
+        // if($photos1!=null) {
+        //     $photos1->storeAs('public/testupload', $photos1->getClientOriginalName());
+        // }
+
+        // if($photos2!=null) {
+        //     $photos2->storeAs('public/testupload', $photos2->getClientOriginalName());
+        // }
+
+        // echo "complete";
+
+
+
+        ################################################# 1. 파라미터 받아오기 ####################################################
+
+        // 매물 아이디, 사용자 아이디, 매물 타입
+        $estate_id = $estate::all()->max()->id + 1;
+        // $user_id = Auth::user()->id;
+        // $deal_type = $this->deal_type($user_id);
+        $estate_type = $request->input('type');
+
+        // 매물 위치와 관련된 정보
+        $si_id = $request->input('addr_si_id');
+        $gu_id = $request->input('addr_gu_id');
+        $dong_id = $request->input('addr_dong_id');
+        $addr1 = $request->input('addr1'); 
+        $addr2 = $request->input('addr2');
+        $latitude = $request->input('latitude');
+        $longtitude = $request->input('longitude');
+
+        // 매물 가격과 관련된 정보
+        $price_type = $request->input('price_type');
+        $price = $request->input('price');
+        $monthly = $request->input('monthly');
+        $monthly_or_annual = $request->input('monthly_or_annual');
+
+        // 그 외 토지/건물 공통 컬럼
+        $public_price = $request->input('public_price');
+        $extent = $request->input('extent');
+        $loan = $request->input('loan');
+
+        // 지목, 구분 과 건폐율, 용적률 관련 정보 (지목구분에 관련된 별도의 테이블에 저장)
+        $category = $request->input('category');
+        $usearea = $request->input('usearea');
+        $land_ratio = $request->input('land_ratio');
+        $area_ratio = $request->input('area_ratio');
+
+        // 건물 테이블에만 저장되는 컬럼 (건물관련 정보를 담고 있는 별도의 테이블에 저장)
+        $private_extent = $request->input('private_extent'); // 크기의 전용면적
+        $support_extent = $request->input('support_extent'); // 크기의 공급면적
+        $height = $request->input('height'); // 층고
+        $movein = $request->input('movein'); // 입주가능일
+        $total_floor = $request->input('total_floor'); //건물 총 층수
+        $floor = $request->input('floor'); //해당층
+        $heater = $request->input('heater'); // 난방방식
+        $fuel = $request->input('fuel'); //난방연료
+        $complete = $request->input('complete');
+        $parking = $request->input('parking'); // 주차대수
+        $manage_price = $request->input('manage_price'); // 관리비
+
+
+        ################################################# 2. 객체 생성하여 받아온 파라메터 세팅 및 데이터베이스에 저장 ####################################################
+
+        // 객체 생성
         $estate = new estate();
         $estate_category = new estate_category();
         $estate_land = new estate_land();
         $estate_building = new estate_building();
-        $estate_id = $estate::all()->max()->id;
-        $estate_id = $estate_id + 1;
 
-        //estate insert 객체.
-        $estate->user_id = $user_id;
-        $estate->addr1 = $request->input('addr1'); 
-        $estate->addr_si_id = $si_id; // 시, 구, 동 id 외래키 insert
+        // estate 테이블에 저장하기 위한 객체 세팅 (토지와 건물의 공통된 컬럼)
+        $estate->user_id = 179;//Auth::user()->id;
+        $estate->deal_type = 1;//$this->deal_type($user_id);
+        $estate->type = $estate_type;
+
+        $estate->addr_si_id = $si_id;
         $estate->addr_gu_id = $gu_id;
         $estate->addr_dong_id = $dong_id;
-        $estate->latitude = $request->input('latitude');
-        $estate->longtitude = $request->input('longtitude');
-        $estate->addr2 = $request->input('addr2');
-        $estate->deal_type = $deal_type;
-        
-        $photo="";
-        // $photos = $request->file('photo');
-        $photo_names = $request->get('photo_name');
+        $estate->addr1 = $addr1; 
+        $estate->addr2 = $addr2;
+        $estate->latitude = $latitude;
+        $estate->longtitude = $longtitude;        
 
-        for($i=0; $i<sizeof($photo_names); $i++){
-            if($photo_names[$i]!=null){
-                $photo .= $estate_id.'.'.$photo_names[$i];
-
-                if($i==sizeof($photo_names)-1){
-
-                }else{
-                    $photo .= ",";
-                }
+        // 매물 가격과 관련된 정보
+        $estate->price_type = $price_type;
+        $estate->price = $price;
+        // 임대인 경우에는 임대료가 월 단위냐 년 단위냐에 따라 데이터가 저장되는 컬럼이 다르다.
+        if($price_type=="3"){
+            switch($monthly_or_annual){
+                case "1" : 
+                    $estate->monthly_price = $monthly;
+                    break;
+                case "2" :
+                    $estate->annual_price = $monthly;
+                    break;
             }
-
-            // if(strpos($photo_names, $photos[$i]->getClientOriginalName())!==false){
-            //     //echo "$i A match was found"."<br>";
-            // }else{
-            //     //echo "$i Continue"; 
-            //     continue;
-            // }
-
-            // 이름 DB 저장
-            
-
-            // $photo .= $estate_id.'.'.$photos[$i]->getClientOriginalName();
-            // // 파일 저장
-            // $photos[$i]->storeAs('public/files', $estate_id.'.'.$photos[$i]->getClientOriginalName());
-            // //$photos[$i]->move('public/files',$photos[$i]->getClientOriginalName());
-
-        }
-        
-        // 문자열 맨 마지막의 쉼표는 반드시 지운다.
-        $photo = trim($photo, ",");
-        //echo $photo;
-        $estate->photo = $photo;
-        $estate->info = $request->input('info');
-        if($request->get('facility') != null)
-            $estate->facility = implode(",", $request->get('facility'));
-        
-        $estate_type = $request->input('type');
-        if($estate_type==1) // 토지 관련 Insert
-        {
-            $estate_category->estate_id = $estate_id;
-            $estate_land->estate_id = $estate_id;
-            $estate->type = $estate_type;
-
-            $extent = $request->extent;
-            if($extent != null)
-                $estate->extent = $extent;
-            else
-                $estate->extent = 0;
-            //$estate->extent = $request->input('extent');
-            $estate_category->category = $request->input('category');
-            $estate_category->usearea = $request->input('usearea');
-            $estate_land->public_price = $request->input('public_price'); //개별공시지가
-
-            //나중에 java-script 이용해서 건폐율/용적률 자동으로 바꿔줘야 한다. 
-            $land_ratio_min = $request->input('land_ratio_min');
-            $land_ratio_max = $request->input('land_ratio_max');
-            $area_ratio_min = $request->input('area_ratio_min');
-            $area_ratio_max = $request->input('area_ratio_max');
-            $estate_category->land_ratio = $land_ratio_min.'~'.$land_ratio_max;
-            $estate_category->area_ratio = $area_ratio_min.'~'.$area_ratio_max;
-            
-            $estate_land->loan = $request->input('loan'); //융자금
-
-            if($request->get('detail_info') != null)
-                $estate_land->type = implode(",", $request->get('detail_info'));// 단지정보(land.type) 
-        }
-        else// 건물 관련 insert
-        {
-            $estate_category->estate_id = $estate_id;
-            $estate_building->estate_id = $estate_id;
-            $estate->type = $estate_type;
-            $estate_category->category = $request->input('category');
-            $estate_category->usearea = $request->input('usearea');
-            $estate_building->public_price = $request->input('public_price1'); //개별공시지가
-
-            //건물 건폐율/용적률 직접 입력
-            $land_ratio_min1 = $request->input('land_ratio_min1');
-            $land_ratio_max1 = $request->input('land_ratio_max1');
-            $area_ratio_min1 = $request->input('area_ratio_min1');
-            $area_ratio_max1 = $request->input('area_ratio_max1');
-            $estate_category->land_ratio = $land_ratio_min1.'~'.$land_ratio_max1;
-            $estate_category->area_ratio = $area_ratio_min1.'~'.$area_ratio_max1;
-            
-            $estate->extent = $request->input('extent1'); // 크기의 대지면적
-            $estate_building->private_extent = $request->input('private_extent'); // 크기의 전용면적
-            $estate_building->support_extent = $request->input('support_extent'); // 크기의 공급면적
-            $estate_building->height = $request->input('height'); // 층고
-            $estate_building->movein = $request->input('movein'); // 입주가능일
-            $estate_building->loan = $request->input('loan1'); // 융자금
-            $estate_building->total_floor = $request->input('total_floor'); //건물 총 층수
-            $estate_building->floor = $request->input('floor'); //해당층
-            $estate_building->parking = $request->input('parking'); // 주차대수
-            $estate_building->heater = $request->input('heater'); // 난방방식
-
-            $complete = $request->input('complete');
-            if($complete!=null) { $estate_building->complete = $complete; } //준공년월
-            $estate_building->fuel = $request->input('fuel'); //난방연료
         }
 
-        //거래가격 로직.
-        $price_type = $request->get('price_type');
-        if($price_type==1) // 매매일 경우
-        {
-            $price0 = $request->input('price0');
-            $estate->price_type = $price_type;;
-            if($price0 != null)
-                $estate->price = $price0;
-            else
-                $estate->price = 0;
-        }
-        elseif($price_type==2) // 전세일 경우
-        {
-            $price1 = $request->input('price1');
-            $estate->price_type = $price_type;;
-            if($price1 != null)
-                $estate->price = $price1;
-            else
-                $estate->price = 0;
-        }
-        elseif($price_type==3) // 임대일 경우
-        {
-            $estate->price_type = $price_type;
-            $estate->price = $request->input('price2'); // price 컬럼이 보증금이 된다.
-            $ym = $request->input('ym'); // 년세, 월세 구분
-            if($ym==1)
-                $estate->monthly_price = $request->input('price3');
-            else
-                $estate->annual_price = $request->input('price3'); // 년세 혹은 월세 입력
+        $estate->save();                                        // 데이터베이스에 저장
+             
+        // estate_category 테이블에 저장하기 위한 객체 세팅
+        $estate_category->estate_id = $estate_id;               // 매물 아이디는 외래키이므롤 반드시 세팅한다.
+        $estate_category->category = $category;
+        $estate_category->usearea = $usearea;
+        $estate_category->land_ratio = $land_ratio;
+        $estate_category->area_ratio = $area_ratio;
+        $estate_category->save();                               // 데이터베이스에 저장
+
+        // estate_type에 따라 저장되는 데이터와 데이터가 저장되는 테이블이 달라진다.
+        switch($estate_type){
+            // 매물이 토지인 경우 estate_land 객체에 세팅
+            case "1" : 
+                $estate_land->estate_id = $estate_id;           // 매물 아이디는 외래키이므롤 반드시 세팅한다.
+                $estate_land->public_price = $public_price;
+                $estate_land->loan = $loan;
+                $estate_land->save();                           // 데이터베이스에 저장
+                break;
+            // 매물이 건물인 경우 estate_building 객체에 세팅
+            case "2" : 
+                $estate_building->estate_id = $estate_id;       // 매물 아이디는 외래키이므롤 반드시 세팅한다.
+                $estate_building->public_price = $public_price;
+                $estate_building->loan = $loan;
+                $estate_building->private_extent = $private_extent;
+                $estate_building->support_extent = $support_extent;
+                $estate_building->height = $height;
+                $estate_building->movein = $movein;
+                $estate_building->total_floor = $total_floor;
+                $estate_building->floor = $floor;
+                $estate_building->heater = $heater;
+                $estate_building->fuel = $fuel;
+                $estate_building->complete = $complete;
+                $estate_building->parking = $parking;
+                $estate_building->manage_price = $manage_price;
+                $estate_building->save();                       // 데이터베이스에 저장
+                break;
         }
 
 
-        
-        if($estate_type==1)
-        {
-            $estate->save();
-            $estate_land->save();
-            $estate_category->save();   
-        }
-        else{
-            $estate->save();
-            $estate_building->save();
-            $estate_category->save();
-        }
+
+        ################################################# 3.  ####################################################
         echo "1";
     }
 

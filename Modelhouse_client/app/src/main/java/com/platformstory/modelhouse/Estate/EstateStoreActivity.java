@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.platformstory.modelhouse.Common.Estate;
 import com.platformstory.modelhouse.Common.Network;
 import com.platformstory.modelhouse.Common.UtilLibs;
 import com.platformstory.modelhouse.R;
@@ -617,20 +618,32 @@ public class EstateStoreActivity extends Activity implements MapView.MapViewEven
                 complete = ((EditText)findViewById(R.id.complete)).getText().toString();
                 parking = ((EditText)findViewById(R.id.parking)).getText().toString();
 
+                Estate estate = new Estate(type+"", null, price_type+"", price, extent, category_param, usearea_param,
+                        null, addr1, null, latitude, longitude, addr2, monthly_param, monthly_or_annual_param+"",
+                        public_price, land_ratio_param, area_ratio_param, private_extent, support_extent, height, movein,
+                        loan, total_floor, floor, heater, fuel, complete, parking, addr_si_id, addr_gu_id, addr_dong_id, manage_price_param);
 
-                Log.i(UtilLibs.LOG_TAG, "주소 : " + addr1 + " " + addr2);
-                Log.i(UtilLibs.LOG_TAG, "좌표 : " + latitude + " " + longitude);
-                Log.i(UtilLibs.LOG_TAG, "매물 종류(토지/건물) : " + type);
-                Log.i(UtilLibs.LOG_TAG, "판매 유형(매매/전세/임대) : " + price_type);
-                Log.i(UtilLibs.LOG_TAG, "거래가격 : " + price);
-                Log.i(UtilLibs.LOG_TAG, "임대료(임대를 선택한 경우 : " + monthly_param + ", 년/월 : " + monthly_or_annual_param);
-                Log.i(UtilLibs.LOG_TAG, "개별공시지가 : " + public_price);
-                Log.i(UtilLibs.LOG_TAG, "지목 : " + category_param + ", 용도 : " + usearea_param);
-                Log.i(UtilLibs.LOG_TAG, "건폐율 : " + land_ratio_param + ", 용적률 : " + area_ratio_param);
+//                Log.i(UtilLibs.LOG_TAG, "주소 : " + addr1 + " " + addr2);
+//                Log.i(UtilLibs.LOG_TAG, "좌표 : " + latitude + " " + longitude);
+//                Log.i(UtilLibs.LOG_TAG, "매물 종류(토지/건물) : " + type);
+//                Log.i(UtilLibs.LOG_TAG, "판매 유형(매매/전세/임대) : " + price_type);
+//                Log.i(UtilLibs.LOG_TAG, "거래가격 : " + price);
+//                Log.i(UtilLibs.LOG_TAG, "임대료(임대를 선택한 경우 : " + monthly_param + ", 년/월 : " + monthly_or_annual_param);
+//                Log.i(UtilLibs.LOG_TAG, "개별공시지가 : " + public_price);
+//                Log.i(UtilLibs.LOG_TAG, "지목 : " + category_param + ", 용도 : " + usearea_param);
+//                Log.i(UtilLibs.LOG_TAG, "건폐율 : " + land_ratio_param + ", 용적률 : " + area_ratio_param);
+//
+//                Log.i(UtilLibs.LOG_TAG, "대지면적 : " + extent + ", 전용면적 : " + private_extent + ", 공급면적 : " + support_extent + ", 층고 : " + height);
+//                Log.i(UtilLibs.LOG_TAG, "입주일 : " + movein);
+//                Log.i(UtilLibs.LOG_TAG, "융자금 : " + loan);
+//                Log.i(UtilLibs.LOG_TAG, "전체층 : " + total_floor + ", 해당층 : " + floor);
+//                Log.i(UtilLibs.LOG_TAG, "난방방식 : " + heater + ", 난방연료 : " + fuel);
+//                Log.i(UtilLibs.LOG_TAG, "준공년월 : " + complete);
+//                Log.i(UtilLibs.LOG_TAG, "주차대수 : " + parking);
 
 
-//                ImageUploadTask imageUploadTask = new ImageUploadTask(Network.URL + "upload", absolutePath);
-//                imageUploadTask.execute();
+                EstateUploadTask estateUploadTask = new EstateUploadTask(Network.URL + "estates", estate, absolutePath);
+                estateUploadTask.execute();
             }
         });
     }
@@ -751,13 +764,15 @@ public class EstateStoreActivity extends Activity implements MapView.MapViewEven
 
 
 
-    class ImageUploadTask extends AsyncTask<Integer, Integer, Integer>{
+    class EstateUploadTask extends AsyncTask<Integer, Integer, Integer>{
         String url;
         String[] path;
+        Estate estate;
 
-        ImageUploadTask(String url, String[] path){
+        EstateUploadTask(String url, Estate estate, String[] path){
             this.url = url;
             this.path = path;
+            this.estate = estate;
         }
 
         @Override
@@ -767,15 +782,48 @@ public class EstateStoreActivity extends Activity implements MapView.MapViewEven
             builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 
             // Set String Params
-//                builder.addTextBody("Key 값", "Value 값", ContentType.create("Multipart/related", "UTF-8"));
-//                builder.addTextBody("Key 값", "Value 값", ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("type", estate.type, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("price_type", estate.price_type, ContentType.create("Multipart/related", "UTF-8"));
 
-            Log.i(UtilLibs.LOG_TAG, "사진 리스트 개수 : "+absolutePath.length+"개");
+            builder.addTextBody("price", estate.price, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("extent", estate.extent, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("category", estate.category, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("usearea", estate.usearea, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("addr1", estate.addr1, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("addr2", estate.addr2, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("latitude", estate.latitude+"", ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("longitude", estate.longtitude+"", ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("monthly", estate.monthly, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("monthly_or_annual", estate.monthly_or_annual, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("public_price", estate.public_price, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("land_ratio", estate.land_ratio, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("area_ratio", estate.area_ratio, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("private_extent", estate.private_extent, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("support_extent", estate.support_extent, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("height", estate.height, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("movein", estate.movein, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("loan", estate.loan, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("total_floor", estate.total_floor, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("floor", estate.floor, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("heater", estate.heater, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("fuel", estate.fuel, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("complete", estate.complete, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("parking", estate.parking, ContentType.create("Multipart/related", "UTF-8"));
+
+            builder.addTextBody("addr_si_id", estate.addr_si_id+"", ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("addr_gu_id", estate.addr_gu_id+"", ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("addr_dong_id", estate.addr_dong_id+"", ContentType.create("Multipart/related", "UTF-8"));
+
+            builder.addTextBody("manage_price", estate.manage_price, ContentType.create("Multipart/related", "UTF-8"));
+
+            Log.i(UtilLibs.LOG_TAG, "사진 리스트 개수 : "+path.length+"개");
 
             // Set File Params
             for(int i=0; i<path.length; i++){
-                Log.i(UtilLibs.LOG_TAG, path[i]);
-                builder.addPart("uploaded_file_"+i, new FileBody(new File(path[i])));
+                if(path[i]!=null) {
+                    Log.i(UtilLibs.LOG_TAG, path[i]);
+                    builder.addPart("uploaded_file_" + i, new FileBody(new File(path[i])));
+                }
             }
 
             // File 이 여러개 인 경우 아래와 같이 adpart 를 하나 더 추가해 주면 된다.

@@ -800,6 +800,7 @@
                             android:text="전용면적" />
 
                         <EditText
+                            android:id="@+id/private_extent"
                             android:layout_width="fill_parent"
                             android:layout_height="65px"
                             android:background="@drawable/border" />
@@ -819,6 +820,7 @@
                             android:text="공급면적" />
 
                         <EditText
+                            android:id="@+id/support_extent"
                             android:layout_width="fill_parent"
                             android:layout_height="65px"
                             android:background="@drawable/border" />
@@ -833,11 +835,13 @@
                         android:visibility="gone">
 
                         <TextView
+
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="층고" />
 
                         <EditText
+                            android:id="@+id/height"
                             android:layout_width="fill_parent"
                             android:layout_height="65px"
                             android:background="@drawable/border" />
@@ -857,6 +861,7 @@
                             android:text="입주가능일" />
 
                         <EditText
+                            android:id="@+id/movein"
                             android:layout_width="fill_parent"
                             android:layout_height="65px"
                             android:background="@drawable/border" />
@@ -875,6 +880,7 @@
                             android:text="융자금" />
 
                         <EditText
+                            android:id="@+id/loan"
                             android:layout_width="fill_parent"
                             android:layout_height="65px"
                             android:background="@drawable/border" />
@@ -895,6 +901,7 @@
 
 
                         <EditText
+                            android:id="@+id/total_floor"
                             android:layout_width="fill_parent"
                             android:layout_height="65px"
                             android:layout_weight="1"
@@ -902,6 +909,7 @@
                             android:hint="전체층" />
 
                         <EditText
+                            android:id="@+id/floor"
                             android:layout_width="fill_parent"
                             android:layout_height="65px"
                             android:layout_weight="1"
@@ -922,6 +930,7 @@
                             android:text="난방방식" />
 
                         <EditText
+                            android:id="@+id/heater"
                             android:layout_width="fill_parent"
                             android:layout_height="65px"
                             android:background="@drawable/border" />
@@ -941,6 +950,7 @@
                             android:text="난방연료" />
 
                         <EditText
+                            android:id="@+id/fuel"
                             android:layout_width="fill_parent"
                             android:layout_height="65px"
                             android:background="@drawable/border" />
@@ -960,6 +970,7 @@
                             android:text="준공년월" />
 
                         <EditText
+                            android:id="@+id/complete"
                             android:layout_width="fill_parent"
                             android:layout_height="65px"
                             android:background="@drawable/border" />
@@ -979,6 +990,7 @@
                             android:text="주차대수" />
 
                         <EditText
+                            android:id="@+id/parking"
                             android:layout_width="fill_parent"
                             android:layout_height="65px"
                             android:background="@drawable/border" />

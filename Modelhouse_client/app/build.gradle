@@ -33,4 +33,5 @@ dependencies {
     compile (group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.3.6') {
         exclude module: 'org.apache.httpcomponents:httpclient'
     }
+    compile 'com.squareup.retrofit2:retrofit:2.2.0'
 }
