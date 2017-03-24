@@ -422,18 +422,34 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    // 클러스터를 형성할 최소의 마커 개수를 1로 설정
+
     class CustomRenderer<T extends ClusterItem> extends DefaultClusterRenderer<T>
     {
         public CustomRenderer(Context context, GoogleMap map, ClusterManager<T> clusterManager) {
             super(context, map, clusterManager);
         }
 
+        // 클러스터를 형성할 최소의 마커 개수를 1로 설정
         @Override
         protected boolean shouldRenderAsCluster(Cluster<T> cluster) {
             //start clustering if at least 1 items overlap
             return cluster.getSize() >= 1;
         }
+
+        // 클러스터의 마커 개수를 대략적인 값이 아닌 정확한 수치로 표시
+        @Override
+        protected int getBucket(Cluster<T> cluster) {
+            int size = cluster.getSize();
+
+            return size;
+        }
+
+        @Override
+        protected String getClusterText(int bucket) {
+            return bucket+"";
+        }
+
+
     }
 
     //앱이 종료되면 현재 지도의 좌표, 줌, 검색 필터 값을 저장
@@ -465,5 +481,33 @@ public class MainActivity extends FragmentActivity {
     }
 }
 
+
+//        http://www.programcreek.com/java-api-examples/index.php?source_dir=android-maps-utils-master/library/src/com/google/maps/android/clustering/view/DefaultClusterRenderer.java
+
+//        구글 지도 줌과 거리
+//        Zoom level 0 1:20088000.56607700 meters
+//        Zoom level 1 1:10044000.28303850 meters
+//        Zoom level 2 1:5022000.14151925 meters
+//        Zoom level 3 1:2511000.07075963 meters
+//        Zoom level 4 1:1255500.03537981 meters
+//        Zoom level 5 1:627750.01768991 meters
+//        Zoom level 6 1:313875.00884495 meters
+//        Zoom level 7 1:156937.50442248 meters
+//        Zoom level 8 1:78468.75221124 meters
+//        Zoom level 9 1:39234.37610562 meters
+//        Zoom level 10 1:19617.18805281 meters
+//        Zoom level 11 1:9808.59402640 meters
+//        Zoom level 12 1:4909.29701320 meters
+//        Zoom level 13 1:2452.14850660 meters
+//        Zoom level 14 1:1226.07425330 meters
+//        Zoom level 15 1:613.03712665 meters
+//        Zoom level 16 1:306.51856332 meters
+//        Zoom level 17 1:153.25928166 meters
+//        Zoom level 18 1:76.62964083 meters
+//        Zoom level 19 1:38.31482042 meters
+
+
+// fcm 푸시 알람 출처
+//http://blog.naver.com/PostView.nhn?blogId=cosmosjs&logNo=220739141098&categoryNo=0&parentCategoryNo=56&viewDate=&currentPage=1&postListTopCurrentPage=1&from=search
 
 
