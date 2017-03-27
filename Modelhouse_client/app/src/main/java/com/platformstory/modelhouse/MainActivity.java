@@ -23,11 +23,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.platformstory.modelhouse.Common.Network;
+import com.platformstory.modelhouse.Common.UtilLibs;
 import com.platformstory.modelhouse.Estate.EstateStoreActivity;
 import com.platformstory.modelhouse.Search.EstateSearchListActivity;
 import com.platformstory.modelhouse.Search.SearchFilterArea;
@@ -82,6 +85,15 @@ public class MainActivity extends FragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        Log.i(UtilLibs.LOG_TAG, "zzzzzzzz");
+        String token = FirebaseInstanceId.getInstance().getToken();
+        Log.i(UtilLibs.LOG_TAG, "Refreshed token: " + token);
+
+        //추가한 라인
+        FirebaseMessaging.getInstance().subscribeToTopic("news");
+        FirebaseInstanceId.getInstance().getToken();
 
         view_list = (Button)findViewById(R.id.button);
 

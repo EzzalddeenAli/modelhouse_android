@@ -11,6 +11,7 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -25,7 +26,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:25.1.1'
     compile files('libs/libDaumMapAndroid.jar')
-    compile 'com.google.android.gms:play-services:6.5.87'
+    compile 'com.google.android.gms:play-services:9.0.0'
     compile 'com.google.maps.android:android-maps-utils:0.4'
     compile 'org.florescu.android.rangeseekbar:rangeseekbar-library:0.3.0'
     compile 'com.github.bumptech.glide:glide:3.6.0'
@@ -34,4 +35,11 @@ dependencies {
         exclude module: 'org.apache.httpcomponents:httpclient'
     }
     compile 'com.squareup.retrofit2:retrofit:2.2.0'
+
+    compile 'com.google.firebase:firebase-messaging:9.6.1'
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+
+    compile 'com.android.support:multidex:1.0.0'
 }
+
+apply plugin: 'com.google.gms.google-services'
