@@ -845,16 +845,30 @@ public class EstateStoreActivity extends Activity implements MapView.MapViewEven
                 String line = null;
 
                 while ((line = bufferdReader.readLine()) != null) {
-                    Log.i(UtilLibs.LOG_TAG, line);
+                    Log.i(UtilLibs.LOG_TAG, "*"+line+"*");
+
+                    if(line.equals("1")){
+                        inputStream.close();
+                        return 1;
+                    }
+
                     stringBuilder.append(line + "\n");
                 }
                 inputStream.close();
+
+
             }catch(IOException e){
                 e.printStackTrace();
             }
 //            Log.i(UtilLibs.LOG_TAG, selectedImagePath + ",\n" + absolutePath);
 //            Log.i(UtilLibs.LOG_TAG, urlString);
             return 0;
+        }
+
+        protected void onPostExecute(Integer result){
+            if(result==1){
+                Toast.makeText(EstateStoreActivity.this, "매물이 등록되었습니다. 등록한 매물은\n'[나의 관심] > [내가 등록한 매물]'에서 확인 가능합니다.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 //    여러개 사진 선택가능하게할때
