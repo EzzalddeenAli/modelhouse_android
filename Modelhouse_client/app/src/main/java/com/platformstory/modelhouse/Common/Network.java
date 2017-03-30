@@ -61,6 +61,7 @@ public class Network {
         return html.toString();
     }
 
+    // Image Glider를 사용하므로 이 메서드는 사용되지 않음 //////////////////////////////////////
     public static Bitmap DownloadImage(String addr){
         Bitmap bit;
         try {
@@ -72,5 +73,6 @@ public class Network {
         }
         return bit;
     }
+    ///////////////////////////////////////////////////////////////////////////////////
 
 }

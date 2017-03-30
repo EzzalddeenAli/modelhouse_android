@@ -413,7 +413,25 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(MainActivity.this, EstateSearchListActivity.class);
-                        intent.putExtra("JSON", JSON);
+
+                        intent.putExtra("latitude", latitude+"");
+                        intent.putExtra("longitude", longitude+"");
+                        intent.putExtra("estate_type", estate_type+"");
+                        intent.putExtra("deal_type", deal_type+"");
+                        intent.putExtra("price_type", price_type+"");
+                        intent.putExtra("price_from", price_from+"");
+                        intent.putExtra("price_to", price_to+"");
+                        intent.putExtra("monthly_from", monthly_from+"");
+                        intent.putExtra("monthly_to", monthly_to+"");
+                        intent.putExtra("extent_from", extent_from+"");
+                        intent.putExtra("extent_to", extent_to+"");
+                        intent.putExtra("monthly_annual", monthly_annual+"");
+
+                        Log.i("modelhouse", "latitude="+latitude+"&longitude="+longitude
+                                +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
+                                +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
+                                +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual);
+
                         startActivity(intent);
                     }
                 });

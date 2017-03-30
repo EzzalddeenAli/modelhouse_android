@@ -1,13 +1,9 @@
 package com.platformstory.modelhouse.Estate;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -18,20 +14,18 @@ import android.provider.MediaStore;
 import android.support.annotation.IdRes;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.platformstory.modelhouse.Common.Estate;
+import com.platformstory.modelhouse.DTO.Estate;
 import com.platformstory.modelhouse.Common.Network;
 import com.platformstory.modelhouse.Common.UtilLibs;
 import com.platformstory.modelhouse.R;
@@ -53,17 +47,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -782,39 +769,39 @@ public class EstateStoreActivity extends Activity implements MapView.MapViewEven
             builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 
             // Set String Params
-            builder.addTextBody("type", estate.type, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("price_type", estate.price_type, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("type", estate.getType(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("price_type", estate.getPrice_type(), ContentType.create("Multipart/related", "UTF-8"));
 
-            builder.addTextBody("price", estate.price, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("extent", estate.extent, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("category", estate.category, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("usearea", estate.usearea, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("addr1", estate.addr1, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("addr2", estate.addr2, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("latitude", estate.latitude+"", ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("longitude", estate.longtitude+"", ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("monthly", estate.monthly, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("monthly_or_annual", estate.monthly_or_annual, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("public_price", estate.public_price, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("land_ratio", estate.land_ratio, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("area_ratio", estate.area_ratio, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("private_extent", estate.private_extent, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("support_extent", estate.support_extent, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("height", estate.height, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("movein", estate.movein, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("loan", estate.loan, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("total_floor", estate.total_floor, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("floor", estate.floor, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("heater", estate.heater, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("fuel", estate.fuel, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("complete", estate.complete, ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("parking", estate.parking, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("price", estate.getPrice(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("extent", estate.getExtent(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("category", estate.getCategory(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("usearea", estate.getUsearea(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("addr1", estate.getAddr1(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("addr2", estate.getAddr2(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("latitude", estate.getLatitude()+"", ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("longitude", estate.getLongtitude()+"", ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("monthly", estate.getMonthly_price(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("monthly_or_annual", estate.getMonthly_or_annual(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("public_price", estate.getPublic_price(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("land_ratio", estate.getLand_ratio(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("area_ratio", estate.getArea_ratio(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("private_extent", estate.getPrivate_extent(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("support_extent", estate.getSupport_extent(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("height", estate.getHeight(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("movein", estate.getMovein(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("loan", estate.getLoan(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("total_floor", estate.getTotal_floor(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("floor", estate.getFloor(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("heater", estate.getHeater(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("fuel", estate.getFuel(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("complete", estate.getComplete(), ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("parking", estate.getParking(), ContentType.create("Multipart/related", "UTF-8"));
 
-            builder.addTextBody("addr_si_id", estate.addr_si_id+"", ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("addr_gu_id", estate.addr_gu_id+"", ContentType.create("Multipart/related", "UTF-8"));
-            builder.addTextBody("addr_dong_id", estate.addr_dong_id+"", ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("addr_si_id", estate.getAddr_si_id()+"", ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("addr_gu_id", estate.getAddr_gu_id()+"", ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("addr_dong_id", estate.getAddr_dong_id()+"", ContentType.create("Multipart/related", "UTF-8"));
 
-            builder.addTextBody("manage_price", estate.manage_price, ContentType.create("Multipart/related", "UTF-8"));
+            builder.addTextBody("manage_price", estate.getManage_price(), ContentType.create("Multipart/related", "UTF-8"));
 
             Log.i(UtilLibs.LOG_TAG, "사진 리스트 개수 : "+path.length+"개");
 

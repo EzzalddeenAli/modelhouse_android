@@ -7,10 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +26,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.platformstory.modelhouse.Common.Network;
 import com.platformstory.modelhouse.Common.UtilLibs;
+import com.platformstory.modelhouse.DTO.Estate;
+import com.platformstory.modelhouse.DTO.NetworkService;
 import com.platformstory.modelhouse.R;
 
 import net.daum.mf.map.api.MapPOIItem;
@@ -34,7 +38,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
 
 public class EstateDetailActivity extends Activity implements MapView.MapViewEventListener, MapView.POIItemEventListener{
     ProgressDialog mProgress;
@@ -45,25 +53,35 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
     ArrayList<Bitmap> bitmaps;
     ArrayList<String> imageUrls;
 
+    String estate_id;
+
     TextView title_addr1;
     TextView user_name;
     TextView phone;
     Button phone_call;
 
+    Estate estate_info;
+
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.estate_detail);
 
+        // 매물 결과 리스트에서 해당 항목을 클릭했을 때 매물 아이디와 위도, 경도 정보를 넘겨 받는다
         Intent intent = getIntent();
-        String estate_id = intent.getStringExtra("estate_id");
+        estate_id = intent.getStringExtra("estate_id");
         latitude = intent.getDoubleExtra("latitude", 37.3219085636);
         longtitude = intent.getDoubleExtra("longtitude", 126.8308434601);
 
-        mProgress = ProgressDialog.show(EstateDetailActivity.this, "Wait", "Downloading...");
+        // 넘겨 받은 위도 경도 정보를 토대로 다음 지도를 띄우는 작업을 수
+        MapView mapView = new MapView(EstateDetailActivity.this);
+        mapView.setDaumMapApiKey(UtilLibs.DAUM_API_KEY);
+        mapView.setMapViewEventListener(EstateDetailActivity.this);
+        mapView.setPOIItemEventListener(EstateDetailActivity.this);
 
-        EstateDetailThread  thread = new EstateDetailThread(Network.URL + "estates/"+estate_id, "GET");
-        thread.start();
+        RelativeLayout mapViewContainer = (RelativeLayout) findViewById(R.id.map_view);
+        mapViewContainer.addView(mapView);
 
+        // 하트를 클릭하면 해당 매물을 찜한다 (데이터베이스에 저장하는 로직은 추후 작성해야 함
         final TextView like_it = (TextView)findViewById(R.id.like_it);
         like_it.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,158 +94,120 @@ public class EstateDetailActivity extends Activity implements MapView.MapViewEve
             }
         });
 
-        MapView mapView = new MapView(EstateDetailActivity.this);
-        mapView.setDaumMapApiKey(UtilLibs.DAUM_API_KEY);
-        mapView.setMapViewEventListener(EstateDetailActivity.this);
-        mapView.setPOIItemEventListener(EstateDetailActivity.this);
+//        mProgress = ProgressDialog.show(EstateDetailActivity.this, "Wait", "Downloading...");
 
-        RelativeLayout mapViewContainer = (RelativeLayout) findViewById(R.id.map_view);
-        mapViewContainer.addView(mapView);
-    }
+        // 넘겨 받은 매물 아이디 정보를 토대로 매물 상세 정보를 서버에서 불러와 화면에 띄운다
+        new AsyncTask<Integer, Integer, Integer>() {
+            @Override
+            protected Integer doInBackground(Integer... params) {
+                NetworkService networkService = NetworkService.retrofit.create(NetworkService.class);
+                Call<List<Estate>> estate = networkService.estateDetail(Integer.parseInt(estate_id));
 
-    class EstateDetailThread extends Thread {
-        String mAddr;
-        String method;
-
-        EstateDetailThread(String addr, String method) {
-            mAddr = addr;
-            this.method = method;
-        }
-
-        public void run() {
-            String Json = Network.DownloadHtml(mAddr, method);
-
-            Message message = mAfterDown.obtainMessage();
-            message.obj = Json;
-            mAfterDown.sendMessage(message);
-        }
-    }
-
-//    class DownImageThread extends Thread{
-//        ArrayList<String> imageUrls;
-//
-//        DownImageThread(ArrayList<String> imageUrls) {
-//            this.imageUrls = imageUrls;
-//        }
-//
-//        public void run() {
-//            bitmaps = new ArrayList<Bitmap>();
-//
-//            for(int i=0; i<imageUrls.size(); i++){
-//                Bitmap bit = Network.DownloadImage(imageUrls.get(i));
-//                bitmaps.add(bit);
-//            }
-//
-//            Message message = mAfterDownImage.obtainMessage();
-//            message.obj = bitmaps;
-//            mAfterDownImage.sendMessage(message);
-//        }
-//    }
-
-    Handler mAfterDown = new Handler() {
-        public void handleMessage(Message msg) {
-            mProgress.dismiss();
-
-            try{
-                JSONArray ja = new JSONArray((String)msg.obj);
-
-                JSONObject estate = ja.getJSONObject(0);
-
-                // 추후 estate.getString("photo")를 콤마(,)를 기준으로 배열로 쪼개어 반복문을 돌릴 예정
-                imageUrls = new ArrayList<String>();
-
-                String[] photos = estate.getString("photo").split(",");
-                for(int i=0; i<photos.length; i++){
-                    imageUrls.add(photos[i]);
+                try {
+                    estate_info = estate.execute().body().get(0);
+                    return 1;
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
-//                bitmaps = (ArrayList<Bitmap>)msg.obj;
-
-                avf = (AdapterViewFlipper) findViewById(R.id.detailed_photo);
-                avf.setAdapter(new galleryAdapter(EstateDetailActivity.this));
-                avf.startFlipping();
-
-                ((Button)findViewById(R.id.showPrev)).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        avf.showPrevious();
-                    }
-                });
-
-                ((Button)findViewById(R.id.showNext)).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        avf.showNext();
-                    }
-                });
-
-//                imageUrls.add("http://blogfiles7.naver.net/data44/2009/1/18/198/21_goback2u.jpg");
-//                imageUrls.add("http://cfile6.uf.tistory.com/image/213A6A4E588A9304335C66");
-//                imageUrls.add("http://blogfiles3.naver.net/data41/2008/11/23/146/jinhae_62_goback2u_goback2u.jpg");
-//                imageUrls.add("http://blogfiles9.naver.net/data41/2009/1/18/24/08_goback2u.jpg");
-
-//                DownImageThread thread1 = new DownImageThread(imageUrls);
-//                thread1.start();
-
-//                Log.i("modelhouse", estate.getInt("id")+ estate.getString("type")+estate.getString("photo")+ estate.getString("price_type")+
-//                        estate.getString("price")+
-//                        estate.getString("extent")+ estate.getString("category")+ estate.getString("usearea")+ estate.getString("facility")+
-//                        estate.getString("addr1")+ estate.getString("info"));
-
-                title_addr1 = (TextView)findViewById(R.id.title_addr1);
-                title_addr1.setText(estate.getString("addr1"));
-
-                user_name = (TextView)findViewById(R.id.user_name);
-                user_name.setText(estate.getString("name"));
-
-                phone = (TextView)findViewById(R.id.phone);
-                phone.setText(estate.getString("mobile"));
-
-                phone_call = (Button)findViewById(R.id.phone_call);
-                phone_call.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent();
-                        intent.setAction(Intent.ACTION_DIAL);
-                        intent.setData(Uri.parse("tel:" + phone.getText().toString()));
-                        startActivity(intent);
-                    }
-                });
-
-
-            }catch (JSONException e){
-
+                return 0;
             }
 
-            TextView estate_id = (TextView)findViewById(R.id.estate_id);
-            estate_id.setText((String)msg.obj);
-        }
+            protected void onPostExecute(Integer result) {
+                if(result==1){
+                    // 이미지를 슬라이더로 띄우는 로직
+                    imageUrls = new ArrayList<String>();
 
-    };
+                    String[] photos = estate_info.getPhoto().split(",");
+                    for (int i = 0; i < photos.length; i++) {
+                        imageUrls.add(photos[i]);
+                    }
 
-//    Handler mAfterDownImage = new Handler(){
-//        public void handleMessage(Message msg){
-//            bitmaps = (ArrayList<Bitmap>)msg.obj;
-//
-//            avf = (AdapterViewFlipper) findViewById(R.id.detailed_photo);
-//            avf.setAdapter(new galleryAdapter(EstateDetailActivity.this));
-//            avf.startFlipping();
-//
-//            ((Button)findViewById(R.id.showPrev)).setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    avf.showPrevious();
-//                }
-//            });
-//
-//            ((Button)findViewById(R.id.showNext)).setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    avf.showNext();
-//                }
-//            });
-//        }
-//    };
+                    avf = (AdapterViewFlipper) findViewById(R.id.detailed_photo);
+                    avf.setAdapter(new galleryAdapter(EstateDetailActivity.this));
+                    avf.startFlipping();
+
+                    // 이미지 슬라이더에서 이전/다음 버튼을 누르면 이미지를 넘길 수 있다.
+                    ((Button) findViewById(R.id.showPrev)).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            avf.showPrevious();
+                        }
+                    });
+
+                    ((Button) findViewById(R.id.showNext)).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            avf.showNext();
+                        }
+                    });
+
+                    title_addr1 = (TextView) findViewById(R.id.title_addr1);
+                    title_addr1.setText(estate_info.getAddr1());
+
+                    user_name = (TextView) findViewById(R.id.user_name);
+                    user_name.setText(estate_info.getName());
+
+                    phone = (TextView) findViewById(R.id.phone);
+                    phone.setText(estate_info.getMobile());
+
+                    phone_call = (Button) findViewById(R.id.phone_call);
+                    phone_call.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_DIAL);
+                            intent.setData(Uri.parse("tel:" + phone.getText().toString()));
+                            startActivity(intent);
+                        }
+                    });
+
+                    TextView estate_id = (TextView) findViewById(R.id.estate_id);
+                    estate_id.setText(
+                        "id : " + estate_info.getId() + "\n"
+                        + "type : " + estate_info.getType() + "\n"
+                                + "deal_type : " + estate_info.getDeal_type() + "\n"
+                                + "facility : " + estate_info.getFacility() + "\n"
+                                + "extent : " + estate_info.getExtent() + "\n"
+                                + "info : " + estate_info.getInfo() + "\n"
+                                + "price_type : " + estate_info.getPrice_type() + "\n"
+                                + "price : " + estate_info.getPrice() + "\n"
+                                + "annual_price : " + estate_info.getAnnual_price() + "\n"
+                                + "monthly_price : " + estate_info.getMonthly_price() + "\n"
+                                + "category : " + estate_info.getCategory() + "\n"
+                                + "usearea : " + estate_info.getUsearea() + "\n"
+                                + "land_ratio : " + estate_info.getLand_ratio() + "\n"
+                                + "area_ratio : " + estate_info.getArea_ratio() + "\n"
+                                + "\n" + "name : " + estate_info.getName() + "\n"
+                                + "mobile : " + estate_info.getMobile() + "\n"
+                                + "user_type : " + estate_info.getUser_type() + "\n"
+
+                    );
+
+//@if($estate_detail->type=='2')
+//                        "public_price" : "{{$estate_detail->public_price}}",
+//                            "private_extent" : "{{$estate_detail->private_extent}}",
+//                            "support_extent" : "{{$estate_detail->support_extent}}",
+//                            "height" : "{{$estate_detail->height}}",
+//                            "movein" : "{{$estate_detail->movein}}",
+//                            "loan" : "{{$estate_detail->loan}}",
+//                            "total_floor" : "{{$estate_detail->total_floor}}",
+//                            "floor" : "{{$estate_detail->floor}}",
+//                            "heater" : "{{$estate_detail->heater}}",
+//                            "fuel" : "{{$estate_detail->fuel}}",
+//                            "complete" : "{{$estate_detail->complete}}",
+//                            "parking" : "{{$estate_detail->parking}}",
+//                            "maintenance_price" : "{{$estate_detail->maintenance_price}}",
+//@else
+//                    "public_price" : "{{$estate_detail->public_price}}",
+//                            "loan" : "{{$estate_detail->loan}}",
+//                            "land_type" : "{{$estate_detail->type}}",
+//                    @endif
+
+                }
+            }
+        }.execute();
+    }
 
     @Override
     public void onMapViewInitialized(MapView mapView) {
