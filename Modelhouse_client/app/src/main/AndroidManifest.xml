@@ -31,8 +31,11 @@
         <activity android:name=".Search.EstateSearchListActivity" android:label="EstateSearchListActivity"/>
         <activity android:name=".Estate.EstateDetailActivity" android:label="EstateDetailActivity"/>
         <activity android:name=".Search.SearchFilterArea" android:label="SearchFilterArea"/>
-
         <activity android:name=".Estate.EstateStoreActivity" android:label="EstateStoreActivity"/>
+        <activity android:name=".User.LoginActivity" android:label="LoginActivity"/>
+        <activity android:name=".User.FindEmailActivity" android:label="FindEmailActivity"/>
+        <activity android:name=".User.FoundEmailActivity" android:label="FoundEmailActivity"/>
+        <activity android:name=".User.FindPasswordActivity" android:label="FindPasswordActivity"/>
 
         <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyCdZXKXnQXA076SF6_YUIbHpL0gejk37rQ"/>
 

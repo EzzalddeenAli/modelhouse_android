@@ -3,6 +3,7 @@ package com.platformstory.modelhouse.DTO;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -33,6 +34,14 @@ public interface NetworkService {
             @Query("extent_to") String extent_to,
             @Query("monthly_annual") String monthly_annual
     );
+
+    @GET("user")
+    Call<List<User>> isLogon();
+
+    @POST("user/login")
+    Call<List<User>> login(@Query("email") String email, @Query("password") String password);
+
+
 
     public static final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl("http://52.79.106.71/api/")

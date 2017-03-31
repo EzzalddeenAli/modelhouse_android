@@ -56,6 +56,8 @@ import java.util.Locale;
 
 
 public class EstateStoreActivity extends Activity implements MapView.MapViewEventListener, MapView.POIItemEventListener{
+    String user_id;
+
     // 매물 위치 정보를 등록하기 위한 변수 정의
     TextView si;
     TextView gu;
@@ -162,6 +164,10 @@ public class EstateStoreActivity extends Activity implements MapView.MapViewEven
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.estate_store);
+
+        // 로그인을 한 상태라면 사용자의 아이디를 받아옴
+        Intent intent = getIntent();
+        user_id = intent.getStringExtra("user_id");
 
         //시-구-동 선택을 위한 텍스트 뷰 선언과 리스너 등록
         si = (TextView)findViewById(R.id.si);
@@ -769,6 +775,8 @@ public class EstateStoreActivity extends Activity implements MapView.MapViewEven
             builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 
             // Set String Params
+            builder.addTextBody("user_id", user_id, ContentType.create("Multipart/related", "UTF-8"));
+
             builder.addTextBody("type", estate.getType(), ContentType.create("Multipart/related", "UTF-8"));
             builder.addTextBody("price_type", estate.getPrice_type(), ContentType.create("Multipart/related", "UTF-8"));
 

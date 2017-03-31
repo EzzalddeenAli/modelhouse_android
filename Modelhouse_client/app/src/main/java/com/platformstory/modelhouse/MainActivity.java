@@ -35,13 +35,26 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.platformstory.modelhouse.Common.GooglelMapUtils;
 import com.platformstory.modelhouse.Common.Network;
 import com.platformstory.modelhouse.Common.UtilLibs;
+import com.platformstory.modelhouse.DTO.AddCookiesInterceptor;
+import com.platformstory.modelhouse.DTO.NetworkService;
+import com.platformstory.modelhouse.DTO.ReceivedCookiesInterceptor;
+import com.platformstory.modelhouse.DTO.User;
 import com.platformstory.modelhouse.Estate.EstateStoreActivity;
 import com.platformstory.modelhouse.Search.EstateSearchListActivity;
 import com.platformstory.modelhouse.Search.SearchFilterArea;
+import com.platformstory.modelhouse.User.LoginActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.List;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -56,6 +69,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     String JSON;
     JSONArray ja;
+
+    User user_info;
+    int user_id = 0;
 
     int estate_type;
     int deal_type;
@@ -82,14 +98,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     Animation translateRightAnim;
     ScrollView slidingPage;
 
+    TextView log_in;
+    Button log_out;
     TextView estate_store;
 
     EstateSearchMapTask task;
-//    String search_params = "latitude="+latitude+"&longitude="+longitude
-//                            +"&estate_type="+estate_type+"&deal_type="+deal_type+"&price_type="+price_type
-//                            +"&price_from="+price_from+"&price_to="+price_to+"&monthly_from="+monthly_from+"&monthly_to="+monthly_to
-//                            +"&extent_from="+extent_from+"&extent_to="+extent_to+"&monthly_annual="+monthly_annual;
 
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -121,6 +136,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         extent_to = settings.getInt("extent_to", 10000);
 
         monthly_annual = settings.getInt("monthly_annual", 0);
+
+        //
 
         // 지도 객체를 생성하고 지도를 표시한 후 좌표, 줌 값을 토대로 중심을 이동 (버전 변경에 따른 지도 표시 방식 변경,  변경날짜 : 17.03.28)
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -155,6 +172,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         slidingPage = (ScrollView) findViewById(R.id.slidingPage);
         frameLayout.bringChildToFront(slidingPage);
 
+        log_in = (TextView)findViewById(R.id.login);
+        log_out = (Button)findViewById(R.id.logout);
+        estate_store = (TextView)findViewById(R.id.estate_store);
+
         menu_btn = (TextView)findViewById(R.id.menu_btn);
         menu_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,13 +191,45 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        // 슬라이딩 페이지 메뉴 버튼 리스너 등록
-        estate_store = (TextView)findViewById(R.id.estate_store);
+        // 슬라이딩 페이지 메뉴 버튼 리스너 등록 (로그인)
+        log_in.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivityForResult(intent, 1);
+            }
+        });
+
+        // 로그아웃
+        log_out.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                user_id = 0;
+                log_out.setVisibility(View.GONE);
+                log_in.setText("로그인");
+                log_in.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                        startActivityForResult(intent, 1);
+                    }
+                });
+            }
+        });
+
+        // 슬라이딩 페이지 메뉴 버튼 리스너 등록 (매물 등록)
         estate_store.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, EstateStoreActivity.class);
-                startActivity(intent);
+                if(user_id!=0){
+                    Intent intent = new Intent(MainActivity.this, EstateStoreActivity.class);
+                    intent.putExtra("user_id", user_id+"");
+                    startActivity(intent);
+                }else{
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivityForResult(intent, 1);
+                }
+
             }
         });
 
@@ -208,6 +261,18 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         translateRightAnim.setAnimationListener(animListener);
         translateLeftAnim.setAnimationListener(animListener);
         // 슬라이딩 페이지(끝) //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    }
+
+    //뒤로가기 버튼을 눌렀을 때 슬라이드 메뉴가 열려 있으면 닫고 그렇지 않으면 앱을 종료
+    @Override
+    public void onBackPressed() {
+        if(isPageOpen){
+            slidingPage.startAnimation(translateRightAnim);
+//            slidingPage.setVisibility(View.INVISIBLE);
+//            isPageOpen=false;
+        }else{
+            finish();
+        }
     }
 
     //인텐트로 결과를 받아오면 위도, 경도를 토대로 지도를 이동하고 클러스터 리스너 등록하는 로직을 여기에 작성
@@ -266,6 +331,22 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     });
                 }
                 break;
+            case 1:
+                if(data!=null){
+                    Log.i(UtilLibs.LOG_TAG, "로그인 성공");
+
+                    user_id = Integer.parseInt(data.getStringExtra("id"));
+//                intent.putExtra("id", user_info.getId()+"");
+//                intent.putExtra("name", user_info.getName());
+//                intent.putExtra("email", user_info.getEmail());
+
+                    log_in.setText(data.getStringExtra("name") +"\n"+ data.getStringExtra("email"));
+                    log_in.setOnClickListener(null);
+                    log_out.setVisibility(View.VISIBLE);
+
+                }
+
+                break;
         }
     }
 
@@ -292,6 +373,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         editor.putInt("extent_to", extent_to);
 
         editor.putInt("monthly_annual", monthly_annual);
+
+//        editor.putInt("user_id", user_id);
 
 
         editor.commit();
