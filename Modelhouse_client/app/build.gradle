@@ -49,6 +49,7 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:10.0.1'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
 
+    compile 'io.jsonwebtoken:jjwt:0.7.0'
 //    compile 'com.android.support:multidex:1.0.0'
 }
 

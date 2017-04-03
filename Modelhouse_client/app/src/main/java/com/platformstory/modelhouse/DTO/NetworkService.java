@@ -1,5 +1,7 @@
 package com.platformstory.modelhouse.DTO;
 
+import com.platformstory.modelhouse.Common.Network;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +46,7 @@ public interface NetworkService {
 
 
     public static final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://52.79.106.71/api/")
+            .baseUrl(Network.URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 }

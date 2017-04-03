@@ -1,13 +1,10 @@
 package com.platformstory.modelhouse;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
@@ -21,23 +18,17 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.maps.android.clustering.Cluster;
-import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.platformstory.modelhouse.Common.GooglelMapUtils;
 import com.platformstory.modelhouse.Common.Network;
 import com.platformstory.modelhouse.Common.UtilLibs;
-import com.platformstory.modelhouse.DTO.AddCookiesInterceptor;
-import com.platformstory.modelhouse.DTO.NetworkService;
-import com.platformstory.modelhouse.DTO.ReceivedCookiesInterceptor;
+
 import com.platformstory.modelhouse.DTO.User;
 import com.platformstory.modelhouse.Estate.EstateStoreActivity;
 import com.platformstory.modelhouse.Search.EstateSearchListActivity;
@@ -47,14 +38,6 @@ import com.platformstory.modelhouse.User.LoginActivity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.List;
-
-import okhttp3.OkHttpClient;
-import retrofit2.Call;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -336,14 +319,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     Log.i(UtilLibs.LOG_TAG, "로그인 성공");
 
                     user_id = Integer.parseInt(data.getStringExtra("id"));
-//                intent.putExtra("id", user_info.getId()+"");
-//                intent.putExtra("name", user_info.getName());
-//                intent.putExtra("email", user_info.getEmail());
 
                     log_in.setText(data.getStringExtra("name") +"\n"+ data.getStringExtra("email"));
                     log_in.setOnClickListener(null);
                     log_out.setVisibility(View.VISIBLE);
-
                 }
 
                 break;
@@ -375,7 +354,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         editor.putInt("monthly_annual", monthly_annual);
 
 //        editor.putInt("user_id", user_id);
-
 
         editor.commit();
     }

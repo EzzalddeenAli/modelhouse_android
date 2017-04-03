@@ -22,9 +22,13 @@ import com.platformstory.modelhouse.Estate.EstateDetailActivity;
 import com.platformstory.modelhouse.R;
 
 import java.io.IOException;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.crypto.MacProvider;
 import retrofit2.Call;
 
 public class LoginActivity extends Activity {
@@ -53,35 +57,47 @@ public class LoginActivity extends Activity {
                 final String email = et_email.getText().toString();
                 final String password = et_password.getText().toString();
 
-                new AsyncTask<Integer, Integer, Integer>() {
-                    @Override
-                    protected Integer doInBackground(Integer... params) {
-                        NetworkService networkService = NetworkService.retrofit.create(NetworkService.class);
-                        Call<List<User>> user = networkService.login(email, password);
 
-                        try {
-                            user_info = user.execute().body().get(0);
-                            return 1;
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                Key key = MacProvider.generateKey();
 
-                        return 0;
-                    }
+                String compactJws = Jwts.builder().setSubject("Yoon").signWith(SignatureAlgorithm.HS256, key).compact();
 
-                    protected void onPostExecute(Integer result) {
-                        if(result==1){
-                            Intent intent = new Intent();
+                Log.i(UtilLibs.LOG_TAG, compactJws);
 
-                            intent.putExtra("id", user_info.getId()+"");
-                            intent.putExtra("name", user_info.getName());
-                            intent.putExtra("email", user_info.getEmail());
+                assert Jwts.parser().setSigningKey(key).parseClaimsJws(compactJws).getBody().getSubject().equals("Yoon");
 
-                            setResult(RESULT_OK, intent);
-                            finish();
-                        }
-                    }
-                }.execute();
+
+//
+//
+//                new AsyncTask<Integer, Integer, Integer>() {
+//                    @Override
+//                    protected Integer doInBackground(Integer... params) {
+//                        NetworkService networkService = NetworkService.retrofit.create(NetworkService.class);
+//                        Call<List<User>> user = networkService.login(email, password);
+//
+//                        try {
+//                            user_info = user.execute().body().get(0);
+//                            return 1;
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//
+//                        return 0;
+//                    }
+//
+//                    protected void onPostExecute(Integer result) {
+//                        if(result==1){
+//                            Intent intent = new Intent();
+//
+//                            intent.putExtra("id", user_info.getId()+"");
+//                            intent.putExtra("name", user_info.getName());
+//                            intent.putExtra("email", user_info.getEmail());
+//
+//                            setResult(RESULT_OK, intent);
+//                            finish();
+//                        }
+//                    }
+//                }.execute();
             }
         });
 
