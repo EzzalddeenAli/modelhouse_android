@@ -37,12 +37,12 @@
 @else
         "public_price" : "{{$estate_detail->public_price}}",
         "loan" : "{{$estate_detail->loan}}",
-        "type" : "{{$estate_detail->type}}",
+        "land_type" : "{{$estate_detail->type}}",
 @endif
 
         "name" : "{{$user_detail->name}}",
         "mobile" : "{{$user_detail->mobile}}",
-        "type" : @if($user_detail->type==1)"기업"@elseif($user_detail->type==2)"중개사무소"@else"일반"@endif
+        "user_type" : @if($user_detail->type==1)"기업"@elseif($user_detail->type==2)"중개사무소"@else"일반"@endif
 
 
     }
