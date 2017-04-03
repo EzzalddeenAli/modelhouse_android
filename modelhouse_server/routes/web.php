@@ -22,3 +22,7 @@
 // Route::get('/ex', function(){
 // 	echo "llll";
 // });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index');

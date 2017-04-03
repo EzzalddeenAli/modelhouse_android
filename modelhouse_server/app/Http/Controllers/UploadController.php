@@ -9,9 +9,8 @@ class UploadController extends Controller
 
     public function index()
     {
-        //
+       echo "index";
     }
-
 
     public function create()
     {
@@ -20,9 +19,6 @@ class UploadController extends Controller
 
     public function store(Request $request)
     {
-        echo "gggg:";
-
-
         $photos0 = $request->file('uploaded_file_0');
         $photos1 = $request->file('uploaded_file_1');
         $photos2 = $request->file('uploaded_file_2');
@@ -37,7 +33,7 @@ class UploadController extends Controller
 
         if($photos2!=null) {
             $photos2->storeAs('public/testupload', $photos2->getClientOriginalName());
-        }                        
+        }
 
         echo "complete";
     }
@@ -50,8 +46,17 @@ class UploadController extends Controller
      */
     public function show($id)
     {
-        //
-    }
+               $photos = $request->file('uploadedfile');
+
+        
+
+        
+            $photos->storeAs('public/testupload', $photos->getClientOriginalName());
+
+        echo "complete";
+            
+
+}
 
     /**
      * Show the form for editing the specified resource.

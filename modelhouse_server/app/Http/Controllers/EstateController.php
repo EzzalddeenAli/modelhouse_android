@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\addr_gue;
 use App\estate;
-use App\user;
+use App\User;
 use App\estate_category;
 use App\estate_land;
 use App\estate_building;
 use DB;
+use Auth;
 
 class EstateController extends Controller
 {
@@ -33,7 +34,8 @@ class EstateController extends Controller
 
         // 매물 아이디, 사용자 아이디, 매물 타입
         $estate_id = $estate::all()->max()->id + 1;
-        // $user_id = Auth::user()->id;
+
+        $estate->user_id = $request->input('user_id');
         // $deal_type = $this->deal_type($user_id);
         $estate_type = $request->input('type');
 
@@ -184,7 +186,6 @@ class EstateController extends Controller
         ################################################# 2. 객체에 받아온 파라메터 세팅 및 데이터베이스에 저장 ####################################################
 
         // estate 테이블에 저장하기 위한 객체 세팅 (토지와 건물의 공통된 컬럼)
-        $estate->user_id = 179;//Auth::user()->id;
         $estate->deal_type = 1;//$this->deal_type($user_id);
         $estate->type = $estate_type;
 
@@ -254,6 +255,50 @@ class EstateController extends Controller
 
         ################################################# 3.  ####################################################
         echo "1";
+        ################################################# 4. 매물 등록이 완료되면 푸시알람 서버에 요청하기 ####################################################
+
+        //데이터베이스에 접속해서 토큰들을 가져와서 FCM에 발신요청
+        $sql = "Select Token From userTest";
+
+        $result = DB::select($sql);
+        $tokens = array();
+
+        if(sizeof($result) > 0 ){
+
+                foreach ($result as $Rresult) {
+                        $tokens[] = $Rresult->Token;
+                }
+        }
+
+        $myMessage = "새로운 매물이 등록되었습니다.";
+        $message = array("message" => $myMessage);
+
+        $url = 'https://fcm.googleapis.com/fcm/send';
+
+        $fields = array(
+                         'registration_ids' => $tokens,
+                         'data' => $message
+                        );
+
+        $headers = array(
+                        'Authorization:key =' . 'AAAAieQVIvY:APA91bFqu3E3CqzFJNefWiKV4BvMUFHUBA6gkenQ8ZqDWb6PmSO3ohsVMetud5IQ7pdKid_OsADmbwJx1eJSUUmB3YfEJ4J6Whz_7Mtr0tTdn32CkIw3bMKDjo90IwH4a5nB8pzhKcaF',
+                        'Content-Type: application/json'
+                        );
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+        $result = curl_exec($ch);
+        if ($result === FALSE) {
+            die('Curl failed: ' . curl_error($ch));
+        }
+        curl_close($ch);
+        #######################################################################################################
     }
 
     public function show($id)
@@ -284,7 +329,7 @@ class EstateController extends Controller
                 break;
         }
 
-        $user_detail = user::find($estate_detail->user_id);
+        $user_detail = User::find($estate_detail->user_id);
 
         return view('estate.show')->with(['estate_detail'=>$estate_detail, 'user_detail'=>$user_detail]);
     }
@@ -304,3 +349,4 @@ class EstateController extends Controller
         //
     }
 }
+

@@ -11,7 +11,6 @@ use DB;
 
 class SearchController extends Controller
 {
-
     public function index(Request $request)
     {
         $latitude = $request->input('latitude');
@@ -133,9 +132,9 @@ class SearchController extends Controller
         }else{
             return view('search.result')->with(['latitude'=>$latitude, 'longitude'=>$longitude, 'results'=>$query]);
         }
-    }
-
-    /**
+    
+}
+/**
      * Display the specified resource.
      *
      * @param  int  $id
