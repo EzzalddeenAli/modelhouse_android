@@ -186,7 +186,6 @@ class EstateController extends Controller
         ################################################# 2. 객체에 받아온 파라메터 세팅 및 데이터베이스에 저장 ####################################################
 
         // estate 테이블에 저장하기 위한 객체 세팅 (토지와 건물의 공통된 컬럼)
-        //$estate->user_id = 179;//Auth::user()->id;
         $estate->deal_type = 1;//$this->deal_type($user_id);
         $estate->type = $estate_type;
 

@@ -12,7 +12,6 @@ class UploadController extends Controller
        echo "index";
     }
 
-
     public function create()
     {
         //
@@ -20,10 +19,6 @@ class UploadController extends Controller
 
     public function store(Request $request)
     {
-
-    echo "gggg:";
-
-
         $photos0 = $request->file('uploaded_file_0');
         $photos1 = $request->file('uploaded_file_1');
         $photos2 = $request->file('uploaded_file_2');
@@ -41,9 +36,6 @@ class UploadController extends Controller
         }
 
         echo "complete";
-
-
-
     }
 
     /**
@@ -100,4 +92,3 @@ class UploadController extends Controller
         //
     }
 }
-

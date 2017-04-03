@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "592237110006",
+    "firebase_url": "https://modelhouse-159805.firebaseio.com",
+    "project_id": "modelhouse-159805",
+    "storage_bucket": "modelhouse-159805.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:592237110006:android:f1c1432b03569bfe",
+        "android_client_info": {
+          "package_name": "com.platformstory.modelhouse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "592237110006-vankc2a3e9rns8aev97uclbg02ounbou.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC27VlcxB1jOZLfKxkAKM0j9YHe_zsrhpk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

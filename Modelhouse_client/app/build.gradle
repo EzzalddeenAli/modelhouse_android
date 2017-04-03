@@ -2,7 +2,8 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion '25.0.0'
+    useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "com.platformstory.modelhouse"
@@ -10,6 +11,7 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -17,14 +19,37 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+    }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.1.1'
+//    compile 'com.android.support:appcompat-v7:25.1.1'
     compile files('libs/libDaumMapAndroid.jar')
-    compile 'com.google.android.gms:play-services:6.5.87'
+    compile 'com.google.android.gms:play-services:10.2.1'
     compile 'com.google.maps.android:android-maps-utils:0.4'
     compile 'org.florescu.android.rangeseekbar:rangeseekbar-library:0.3.0'
+    compile 'com.github.bumptech.glide:glide:3.6.0'
+
+    compile 'org.apache.httpcomponents:httpclient-android:4.3.5'
+    compile 'org.apache.httpcomponents:httpmime:4.3.6'
+    compile group: 'org.apache.httpcomponents', name: 'httpclient-android', version: '4.3.5'
+    compile (group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.3.6') {
+        exclude module: 'org.apache.httpcomponents:httpclient'
+    }
+
+    compile 'com.google.code.gson:gson:2.7'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+
+    compile 'com.google.firebase:firebase-messaging:10.0.1'
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+
+//    compile 'com.android.support:multidex:1.0.0'
 }
+
+apply plugin: 'com.google.gms.google-services'

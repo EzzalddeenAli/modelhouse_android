@@ -1,4 +1,4 @@
-package com.platformstory.modelhouse;
+package com.platformstory.modelhouse.Common;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -15,6 +15,9 @@ import java.net.URL;
 
 
 public class Network {
+    public static final String URL = "http://52.79.106.71/api/";
+    public static final String IMAGE_URL = "http://52.79.106.71/storage/";
+
     public static boolean isNetworkAvailable(Context context){
         boolean available = false;
 
@@ -29,7 +32,7 @@ public class Network {
         return available;
     }
 
-    public static String DownloadHtml(String addr) {
+    public static String DownloadHtml(String addr, String method) {
         StringBuilder html = new StringBuilder();
         try {
             URL url = new URL(addr);
@@ -37,6 +40,7 @@ public class Network {
             if (conn != null) {
                 conn.setConnectTimeout(10000);
                 conn.setUseCaches(false);
+                conn.setRequestMethod(method);
                 if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     BufferedReader br = new BufferedReader(
                             new InputStreamReader(conn.getInputStream()));
@@ -57,6 +61,7 @@ public class Network {
         return html.toString();
     }
 
+    // Image Glider를 사용하므로 이 메서드는 사용되지 않음 //////////////////////////////////////
     public static Bitmap DownloadImage(String addr){
         Bitmap bit;
         try {
@@ -68,5 +73,6 @@ public class Network {
         }
         return bit;
     }
+    ///////////////////////////////////////////////////////////////////////////////////
 
 }
